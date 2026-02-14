@@ -650,7 +650,7 @@ src/
 
 ---
 
-## Stories Remaining: 10
+## Stories Remaining: 7
 
 
 ### US-011: Responsive layout for mobile and desktop ✅
@@ -688,3 +688,165 @@ src/
 5. ✅ No horizontal scroll on any viewport
 6. ✅ Typecheck passes
 7. ✅ Tests for [responsive] pass (24 tests)
+
+
+### US-012: Main App layout integration ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Restructured App.tsx with proper header, main content area, and footer layout
+- Header contains app title "Pomodoro Timer" with Timer icon on the left
+- Header actions area contains ThemeToggle and Settings button (moved from footer)
+- Settings button opens the SettingsPanel when clicked
+- Main content area is centered with TimerDisplay, TimerControls, and SessionCounter
+- Session counter is visible below the timer controls
+- Footer contains keyboard shortcut hints (Space to start/pause, R to reset)
+- Clean, centered layout with proper spacing using CSS custom properties
+- Responsive design with breakpoints for tablet, mobile, and desktop
+- Comprehensive test suite with 22 tests for app layout functionality
+
+**Files Modified:**
+- `src/App.tsx` - Restructured layout with header actions, centered main content
+- `src/App.css` - Updated styles for new header structure with actions area
+- `src/test/App.test.tsx` - Comprehensive test suite (22 tests) for app layout
+
+**Acceptance Criteria Status:**
+1. ✅ App shows title 'Pomodoro Timer' in header
+2. ✅ Settings button opens settings panel
+3. ✅ Timer display centered in viewport
+4. ✅ Session counter visible below timer
+5. ✅ Dark/light toggle visible in header
+6. ✅ Typecheck passes
+7. ✅ Tests for [app-layout] pass (22 tests)
+
+---
+
+## Codebase Patterns
+
+### Design System
+- **Primary Color:** Amber-500 (#f59e0b) - warm, focused aesthetic
+- **Font Pair:** Sora (headings) + Nunito Sans (body)
+- **Icons:** Lucide React (SVG only, no emoji)
+- **Animations:** 150-300ms, transform/opacity only
+- **CSS Variables:** All design tokens in tokens.css
+
+### File Structure
+```
+src/
+├── components/
+│   ├── TimerDisplay.tsx       # Timer display component
+│   ├── TimerDisplay.css       # Component styles
+│   ├── TimerDisplay.test.tsx  # Component tests (co-located)
+│   ├── TimerControls.tsx      # Timer controls component
+│   ├── TimerControls.css      # Controls styles
+│   ├── TimerControls.test.tsx # Controls tests (co-located)
+│   ├── SessionCounter.tsx     # Session counter component
+│   ├── SessionCounter.css     # Counter styles
+│   ├── SessionCounter.test.tsx # Counter tests (co-located)
+│   ├── SettingsPanel.tsx      # Settings panel component
+│   ├── SettingsPanel.css      # Panel styles
+│   ├── SettingsPanel.test.tsx # Panel tests (co-located)
+│   ├── ThemeToggle.tsx        # Theme toggle component
+│   ├── ThemeToggle.css        # Theme toggle styles
+│   ├── ThemeToggle.test.tsx   # Theme toggle tests (co-located)
+│   └── ResponsiveLayout.test.tsx # Responsive layout tests
+├── hooks/
+│   ├── useTimer.ts            # Timer hook with Pomodoro logic
+│   ├── useTimer.test.ts       # Hook tests (co-located)
+│   ├── useSound.ts            # Sound notification hook
+│   ├── useSound.test.ts       # Sound hook tests (co-located)
+│   ├── useKeyboardShortcuts.ts # Keyboard shortcuts hook
+│   ├── useKeyboardShortcuts.test.ts # Keyboard shortcuts tests (co-located)
+│   ├── useSettingsPersistence.ts # Settings persistence hook
+│   ├── useSettingsPersistence.test.ts # Settings persistence tests (co-located)
+│   ├── useTheme.ts            # Theme management hook
+│   └── useTheme.test.ts       # Theme hook tests (co-located)
+├── styles/
+│   └── tokens.css             # Design tokens
+├── test/
+│   ├── setup.ts               # Test configuration
+│   ├── App.test.tsx           # App layout tests
+│   ├── setup.test.ts          # Project setup tests
+│   └── tokens.test.ts         # Design tokens tests
+├── App.tsx                    # Main app component
+├── App.css                    # App layout styles
+├── main.tsx                   # Entry point
+└── index.css                  # Global styles
+```
+
+### Component Pattern
+- Create component with .tsx, .css, and .test.tsx files
+- Use CSS custom properties from tokens.css for theming
+- Add data-testid attributes for testing
+- Support prefers-reduced-motion for accessibility
+- Use Sora for headings, Nunito Sans for body text
+- Keep animations to 150-300ms with transform/opacity only
+- Include keyboard shortcut hints with `<kbd>` elements
+- Use focus-visible for accessible focus states
+- Wrap in aria-live region for dynamic content updates
+
+### Testing Pattern
+- Vitest for test runner
+- @testing-library/react for component tests
+- jsdom for DOM environment
+- Tests co-located with source (`*.test.ts` next to `*.ts`)
+- Use `vi.useFakeTimers()` and `vi.useRealTimers()` for timer tests
+- Test all state variations and user interactions
+- Test LocalStorage interactions with beforeEach/afterEach cleanup
+
+### Hook Pattern
+- Export types alongside hook for consumer use
+- Use refs for settings to avoid re-renders
+- Cleanup intervals in useEffect return
+- State machine approach (idle/running/paused)
+
+### LocalStorage Pattern
+- Define STORAGE_KEY constant at module level
+- Wrap localStorage calls in try-catch for private browsing mode
+- Load from storage in useEffect on mount
+- Persist to storage when data changes
+- Validate parsed values before using
+
+### Sound Pattern
+- Use Web Audio API for generated sounds (no external files)
+- Create pleasant tones with oscillators and gain envelopes
+- Add harmonics for richer bell-like sounds
+- Use different frequencies for distinct notifications
+- Volume control with LocalStorage persistence
+- Handle AudioContext suspension (browser autoplay policy)
+- Cleanup AudioContext on unmount
+- Mock AudioContext with configurable: true property descriptor to allow redefinition in tests
+
+### Keyboard Shortcuts Pattern
+- Use window.addEventListener('keydown') with proper cleanup in useEffect return
+- Check document.activeElement to avoid triggering shortcuts when typing in input fields
+- Prevent default on Space to avoid page scroll
+- Use refs to store callback options to avoid re-attaching listeners on every render
+- Support enabled/disabled state for conditional activation
+
+### Settings Panel Pattern
+- Use slide-out panel with backdrop overlay for modal experience
+- Form inputs with local state (only apply on save)
+- Validation with error messages and disabled submit on errors
+- Escape key to close, prevent body scroll when open
+- Reset to defaults functionality
+- Full accessibility: ARIA attributes, focus management, aria-describedby for hints/errors
+
+### Theme Pattern
+- Use `data-theme` attribute on document element for CSS variable scoping
+- Define dark mode colors in tokens.css using `[data-theme="dark"]` selector
+- Store theme preference in LocalStorage with key 'pomodoro-theme'
+- Respect system preference on first visit via `prefers-color-scheme` media query
+- Listen for system preference changes, but only apply if no user preference stored
+- Provide toggle function and isDark boolean for component consumption
+- Use Sun/Moon icons from Lucide React for visual indication
+- Apply smooth transitions on theme change (CSS variables update automatically)
+
+### App Layout Pattern
+- Header with flex layout: left side for branding (icon + title), right side for actions (theme toggle, settings)
+- Main content area centered with flex column layout
+- Footer for secondary information (keyboard shortcuts)
+- Use CSS custom properties for consistent spacing
+- Responsive breakpoints for mobile, tablet, and desktop
+- All interactive elements have minimum 44px touch targets
