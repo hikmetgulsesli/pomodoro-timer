@@ -64,19 +64,28 @@ function App() {
 
   return (
     <div className="app-container" style={{ backgroundColor: 'var(--surface)', color: 'var(--text)' }}>
-      {/* Theme Toggle */}
-      <div className="app-theme-toggle">
-        <ThemeToggle />
-      </div>
-
       {/* Header */}
       <header className="app-header">
-        <div className="app-header__icon">
-          <Timer size={40} style={{ color: 'var(--primary)' }} />
+        <div className="app-header__left">
+          <div className="app-header__icon">
+            <Timer size={40} style={{ color: 'var(--primary)' }} />
+          </div>
+          <h1 className="app-header__title" style={{ color: 'var(--text)' }}>
+            Pomodoro Timer
+          </h1>
         </div>
-        <h1 className="app-header__title" style={{ color: 'var(--text)' }}>
-          Pomodoro Timer
-        </h1>
+        <div className="app-header__actions">
+          <ThemeToggle />
+          <button
+            type="button"
+            className="app-settings-button"
+            onClick={() => setIsSettingsOpen(true)}
+            aria-label="Open settings"
+            data-testid="settings-button"
+          >
+            <Settings size={20} aria-hidden="true" />
+          </button>
+        </div>
       </header>
 
       {/* Main Content */}
@@ -108,17 +117,6 @@ function App() {
 
       {/* Footer */}
       <footer className="app-footer">
-        <button
-          type="button"
-          className="app-settings-button"
-          onClick={() => setIsSettingsOpen(true)}
-          aria-label="Open settings"
-          data-testid="settings-button"
-        >
-          <Settings size={18} aria-hidden="true" />
-          <span>Settings</span>
-        </button>
-        
         <p className="app-footer__hint">
           Press <kbd>Space</kbd> to start/pause, <kbd>R</kbd> to reset
         </p>
