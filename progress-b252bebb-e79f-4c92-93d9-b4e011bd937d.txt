@@ -485,7 +485,9 @@ src/
 │   ├── useSound.ts            # Sound notification hook
 │   ├── useSound.test.ts       # Sound hook tests (co-located)
 │   ├── useKeyboardShortcuts.ts # Keyboard shortcuts hook
-│   └── useKeyboardShortcuts.test.ts # Keyboard shortcuts tests (co-located)
+│   ├── useKeyboardShortcuts.test.ts # Keyboard shortcuts tests (co-located)
+│   ├── useSettingsPersistence.ts # Settings persistence hook
+│   └── useSettingsPersistence.test.ts # Settings persistence tests (co-located)
 ├── styles/
 │   └── tokens.css             # Design tokens
 ├── test/
@@ -556,5 +558,47 @@ src/
 
 ---
 
-## Stories Remaining: 15
+### US-009: Settings persistence in LocalStorage ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `useSettingsPersistence` hook for persisting timer durations to LocalStorage
+- Uses LocalStorage key 'pomodoro-settings' for storing custom timer durations
+- Loads settings from LocalStorage on app mount, falls back to defaults if not found
+- Validates stored settings (range 1-60 minutes for each duration)
+- Merges partial settings with defaults (e.g., if only workDuration is stored)
+- Provides `saveSettings()` to persist changes when user confirms settings
+- Provides `resetSettings()` to clear stored settings and revert to defaults
+- Gracefully handles LocalStorage errors (private browsing mode, quota exceeded)
+- Updated App.tsx to demonstrate integration with the settings persistence hook
+- Comprehensive test suite with 17 tests covering initialization, saving, resetting, validation, and edge cases
+
+**Files Created/Modified:**
+- `src/hooks/useSettingsPersistence.ts` - Settings persistence hook with LocalStorage integration
+- `src/hooks/useSettingsPersistence.test.ts` - Comprehensive test suite (17 tests)
+- `src/App.tsx` - Updated to integrate useSettingsPersistence hook
+
+**Acceptance Criteria Status:**
+1. ✅ Settings persist across page reloads via LocalStorage
+2. ✅ Custom durations load correctly on app start
+3. ✅ Default values used if no stored settings exist
+4. ✅ LocalStorage key 'pomodoro-settings' used
+5. ✅ Typecheck passes
+6. ✅ Tests for [settings-persistence] pass (17 tests)
+
+### Settings Persistence Pattern
+- Use dedicated hook for LocalStorage persistence (e.g., `useSettingsPersistence`)
+- Define STORAGE_KEY constant at module level for consistency
+- Load from LocalStorage in useEffect on mount with validation
+- Validate parsed values (type checking + range validation) before using
+- Merge partial settings with defaults instead of rejecting entirely
+- Always update state even if LocalStorage fails (graceful degradation)
+- Wrap localStorage calls in try-catch for private browsing mode / quota errors
+- Export DEFAULT_DURATIONS for reset functionality and external use
+- Return `isLoaded` flag to prevent UI flash while loading persisted settings
+
+---
+
+## Stories Remaining: 14
 
