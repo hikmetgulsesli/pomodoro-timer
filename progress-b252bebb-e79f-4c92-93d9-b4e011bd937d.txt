@@ -652,3 +652,39 @@ src/
 
 ## Stories Remaining: 10
 
+
+### US-011: Responsive layout for mobile and desktop ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Updated TimerDisplay.css with responsive breakpoints (768px, 480px, 360px)
+- Timer SVG now uses viewBox for proper responsive scaling
+- TimerControls buttons have min-height of 64-80px (exceeds 44px requirement)
+- SessionCounter with max-width and responsive padding
+- SettingsPanel with 44px touch targets on close button and inputs
+- ThemeToggle with 44x44px touch target
+- App.css with responsive layout classes and no horizontal scroll
+- All components use box-sizing: border-box for proper containment
+
+**Files Modified:**
+- `src/App.css` - Added responsive app layout with breakpoints
+- `src/App.tsx` - Full integration with timer components
+- `src/components/TimerDisplay.css` - Responsive sizing for timer ring
+- `src/components/TimerDisplay.tsx` - Responsive SVG with viewBox
+- `src/components/TimerControls.css` - Touch target sizes (min-height: 64-80px)
+- `src/components/SessionCounter.css` - Responsive max-width and padding
+- `src/components/SettingsPanel.css` - Touch targets (44px minimum)
+- `src/components/ThemeToggle.css` - 44x44px touch target
+
+**Files Created:**
+- `src/components/ResponsiveLayout.test.tsx` - 24 responsive layout tests
+
+**Acceptance Criteria Status:**
+1. ✅ App renders correctly at 320px width (mobile)
+2. ✅ App renders correctly at 1280px+ width (desktop)
+3. ✅ Button touch targets are at least 44x44px
+4. ✅ Timer text is readable on mobile
+5. ✅ No horizontal scroll on any viewport
+6. ✅ Typecheck passes
+7. ✅ Tests for [responsive] pass (24 tests)
