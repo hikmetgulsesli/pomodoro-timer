@@ -22,6 +22,11 @@ export interface UseTimerReturn {
   skip: () => void;
 }
 
+export interface UseTimerOptions {
+  onWorkComplete?: () => void;
+  onBreakComplete?: () => void;
+}
+
 const DEFAULT_SETTINGS: TimerSettings = {
   workDuration: 25,
   shortBreakDuration: 5,
@@ -42,7 +47,10 @@ function getDurationForMode(mode: TimerMode, settings: TimerSettings): number {
   }
 }
 
-export function useTimer(settings: Partial<TimerSettings> = {}): UseTimerReturn {
+export function useTimer(
+  settings: Partial<TimerSettings> = {},
+  options: UseTimerOptions = {}
+): UseTimerReturn {
   const mergedSettings = { ...DEFAULT_SETTINGS, ...settings };
   
   const [mode, setMode] = useState<TimerMode>('work');
@@ -54,11 +62,16 @@ export function useTimer(settings: Partial<TimerSettings> = {}): UseTimerReturn 
   
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const settingsRef = useRef(mergedSettings);
+  const optionsRef = useRef(options);
   
-  // Update settings ref when settings change
+  // Update refs when dependencies change
   useEffect(() => {
     settingsRef.current = { ...DEFAULT_SETTINGS, ...settings };
   }, [settings]);
+  
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
 
   const clearTimerInterval = useCallback(() => {
     if (intervalRef.current) {
@@ -82,10 +95,16 @@ export function useTimer(settings: Partial<TimerSettings> = {}): UseTimerReturn 
 
   const transitionToNextMode = useCallback(() => {
     const nextMode = getNextMode();
+    const currentMode = mode;
     
     // Increment session count when completing a work session
-    if (mode === 'work') {
+    if (currentMode === 'work') {
       setSessionCount(prev => prev + 1);
+      // Play work complete sound
+      optionsRef.current.onWorkComplete?.();
+    } else {
+      // Play break complete sound
+      optionsRef.current.onBreakComplete?.();
     }
     
     setMode(nextMode);
