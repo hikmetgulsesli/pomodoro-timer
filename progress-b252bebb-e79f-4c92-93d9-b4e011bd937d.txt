@@ -266,6 +266,35 @@ src/
 5. ✅ Typecheck passes
 6. ✅ Tests for [session-counter] pass (16 tests)
 
+### US-006: Sound notification on timer complete ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `useSound` hook using Web Audio API to generate pleasant bell/chime sounds
+- Work complete: Higher pitch bell sound (880 Hz A5) with harmonics for rich tone
+- Break complete: Gentle two-note chime (C5 + E5) for a softer notification
+- Volume control with LocalStorage persistence (key: 'pomodoro-sound-volume')
+- Default volume set to 0.5 (50%) for comfortable listening
+- AudioContext automatically resumes if suspended (browser autoplay policy)
+- Integrated with useTimer hook via callback options: `onWorkComplete` and `onBreakComplete`
+- Sounds play automatically when timer reaches zero
+- Proper cleanup of AudioContext on component unmount
+- Comprehensive test suite with 21 tests covering initialization, volume control, sound playback, and cleanup
+
+**Files Created/Modified:**
+- `src/hooks/useSound.ts` - Sound hook with Web Audio API implementation
+- `src/hooks/useSound.test.ts` - Comprehensive test suite (21 tests)
+- `src/hooks/useTimer.ts` - Added UseTimerOptions interface with onWorkComplete/onBreakComplete callbacks
+
+**Acceptance Criteria Status:**
+1. ✅ Sound plays when work timer completes (bell sound)
+2. ✅ Sound plays when break timer completes (chime sound)
+3. ✅ Audio generated via Web Audio API (no external files needed, no licensing issues)
+4. ✅ Sounds are pleasant, not jarring (bell with harmonics, gentle chime)
+5. ✅ Typecheck passes
+6. ✅ Tests for [sound-notification] pass (21 tests)
+
 ---
 
 ## Codebase Patterns
@@ -292,7 +321,9 @@ src/
 │   └── SessionCounter.test.tsx # Counter tests (co-located)
 ├── hooks/
 │   ├── useTimer.ts            # Timer hook with Pomodoro logic
-│   └── useTimer.test.ts       # Hook tests (co-located)
+│   ├── useTimer.test.ts       # Hook tests (co-located)
+│   ├── useSound.ts            # Sound notification hook
+│   └── useSound.test.ts       # Sound hook tests (co-located)
 ├── styles/
 │   └── tokens.css             # Design tokens
 ├── test/
@@ -336,7 +367,16 @@ src/
 - Persist to storage when data changes
 - Validate parsed values before using
 
+### Sound Pattern
+- Use Web Audio API for generated sounds (no external files)
+- Create pleasant tones with oscillators and gain envelopes
+- Add harmonics for richer bell-like sounds
+- Use different frequencies for distinct notifications
+- Volume control with LocalStorage persistence
+- Handle AudioContext suspension (browser autoplay policy)
+- Cleanup AudioContext on unmount
+
 ---
 
-## Stories Remaining: 19
+## Stories Remaining: 18
 
