@@ -1,0 +1,82 @@
+# Pomodoro Timer - Progress Log
+
+## Run ID: b252bebb-e79f-4c92-93d9-b4e011bd937d
+
+---
+
+## Completed Stories
+
+### US-001: Project setup and design tokens ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Initialized Vite+React+TypeScript project
+- Installed and configured Tailwind CSS v4 with @tailwindcss/vite
+- Installed lucide-react for SVG icons
+- Created design tokens CSS file (`src/styles/tokens.css`) with warm amber/orange palette
+- Configured Google Fonts (Sora + Nunito Sans) in index.html
+- Set up Vite config for port 3507
+- Created .env.example and updated .gitignore
+- Set up Vitest with @testing-library/react for testing
+- Created initial test suite for setup verification
+
+**Files Created/Modified:**
+- `vite.config.ts` - Added tailwindcss plugin, configured port 3507
+- `vitest.config.ts` - Test configuration
+- `index.html` - Added Google Fonts, VITE_APP_TITLE placeholder
+- `src/index.css` - Base styles with design tokens
+- `src/styles/tokens.css` - CSS custom properties for warm color palette
+- `src/App.tsx` - Basic app component with Lucide icon
+- `.env.example` - Environment variables template
+- `.gitignore` - Added node_modules, .env, dist
+- `src/test/setup.ts` - Test setup file
+- `src/test/App.test.tsx` - App component tests
+- `src/test/tokens.test.ts` - Design tokens tests
+- `src/test/setup.test.ts` - Project setup tests
+
+**Acceptance Criteria Status:**
+1. ✅ Vite+React+TypeScript project runs on port 3507
+2. ✅ Design tokens CSS file created with --primary, --accent, --surface, --text, etc.
+3. ✅ Google Fonts link added for Sora + Nunito Sans
+4. ✅ lucide-react installed and configured
+5. ✅ Tailwind configured with custom color tokens
+6. ✅ .gitignore includes node_modules, .env, dist
+7. ✅ .env.example created with VITE_APP_TITLE placeholder
+8. ✅ Typecheck passes
+9. ✅ Tests for setup pass (11 tests)
+
+---
+
+## Codebase Patterns
+
+### Design System
+- **Primary Color:** Amber-500 (#f59e0b) - warm, focused aesthetic
+- **Font Pair:** Sora (headings) + Nunito Sans (body)
+- **Icons:** Lucide React (SVG only, no emoji)
+- **Animations:** 150-300ms, transform/opacity only
+- **CSS Variables:** All design tokens in tokens.css
+
+### File Structure
+```
+src/
+├── styles/
+│   └── tokens.css       # Design tokens
+├── test/
+│   ├── setup.ts         # Test configuration
+│   └── *.test.tsx       # Test files
+├── App.tsx              # Main app component
+├── main.tsx             # Entry point
+└── index.css            # Global styles
+```
+
+### Testing Pattern
+- Vitest for test runner
+- @testing-library/react for component tests
+- jsdom for DOM environment
+- Tests co-located in src/test/
+
+---
+
+## Stories Remaining: 26
+
