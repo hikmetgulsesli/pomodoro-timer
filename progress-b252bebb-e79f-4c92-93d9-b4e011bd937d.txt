@@ -116,5 +116,89 @@ src/
 
 ---
 
-## Stories Remaining: 24
+### US-003: Timer display component with progress indicator ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `TimerDisplay` component with circular progress indicator using SVG stroke-dasharray technique
+- Displays time remaining in MM:SS format with large readable typography
+- Shows current mode label (Work/Short Break/Long Break) with appropriate colors
+- Progress ring animates smoothly with 300ms transitions using transform/opacity
+- Uses CSS custom properties (--primary, --timer-work, --timer-break, --timer-long-break) for colors
+- Component accepts timeRemaining, totalTime, and mode as props
+- Comprehensive test suite with 13 tests covering all functionality
+- Responsive design with mobile adjustments
+- Reduced motion support for accessibility
+
+**Files Created/Modified:**
+- `src/components/TimerDisplay.tsx` - Main timer display component with circular progress
+- `src/components/TimerDisplay.css` - Component styles with responsive and reduced-motion support
+- `src/components/TimerDisplay.test.tsx` - Comprehensive test suite (13 tests)
+
+**Acceptance Criteria Status:**
+1. ✅ TimerDisplay component renders time in MM:SS format
+2. ✅ Circular progress indicator shows percentage remaining using stroke-dasharray
+3. ✅ Mode label displays current phase (Work/Short Break/Long Break)
+4. ✅ Progress ring uses --primary color (and mode-specific colors from tokens)
+5. ✅ Component accepts timeRemaining, totalTime, mode as props
+6. ✅ Animations use transform/opacity only, 150-300ms
+7. ✅ Typecheck passes
+8. ✅ Tests for [timer-display] pass (13 tests)
+
+---
+
+## Codebase Patterns
+
+### Design System
+- **Primary Color:** Amber-500 (#f59e0b) - warm, focused aesthetic
+- **Font Pair:** Sora (headings) + Nunito Sans (body)
+- **Icons:** Lucide React (SVG only, no emoji)
+- **Animations:** 150-300ms, transform/opacity only
+- **CSS Variables:** All design tokens in tokens.css
+
+### File Structure
+```
+src/
+├── components/
+│   ├── TimerDisplay.tsx       # Timer display component
+│   ├── TimerDisplay.css       # Component styles
+│   └── TimerDisplay.test.tsx  # Component tests (co-located)
+├── hooks/
+│   ├── useTimer.ts            # Timer hook with Pomodoro logic
+│   └── useTimer.test.ts       # Hook tests (co-located)
+├── styles/
+│   └── tokens.css             # Design tokens
+├── test/
+│   ├── setup.ts               # Test configuration
+│   └── *.test.tsx             # Other tests
+├── App.tsx                    # Main app component
+├── main.tsx                   # Entry point
+└── index.css                  # Global styles
+```
+
+### Component Pattern
+- Create component with .tsx, .css, and .test.tsx files
+- Use CSS custom properties from tokens.css for theming
+- Add data-testid attributes for testing
+- Support prefers-reduced-motion for accessibility
+- Use Sora for headings, Nunito Sans for body text
+- Keep animations to 150-300ms with transform/opacity only
+
+### Testing Pattern
+- Vitest for test runner
+- @testing-library/react for component tests
+- jsdom for DOM environment
+- Tests co-located with source (`*.test.ts` next to `*.ts`)
+- Use `vi.useFakeTimers()` and `vi.useRealTimers()` for timer tests
+
+### Hook Pattern
+- Export types alongside hook for consumer use
+- Use refs for settings to avoid re-renders
+- Cleanup intervals in useEffect return
+- State machine approach (idle/running/paused)
+
+---
+
+## Stories Remaining: 21
 
