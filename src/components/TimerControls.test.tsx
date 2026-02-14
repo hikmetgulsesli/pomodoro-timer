@@ -1,6 +1,5 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TimerControls } from './TimerControls';
 import type { TimerState } from '../hooks/useTimer';
 
@@ -180,9 +179,11 @@ describe('TimerControls', () => {
     it('hides icons from screen readers with aria-hidden', () => {
       renderTimerControls('idle');
 
-      const icons = screen.getAllByRole('img', { hidden: true });
-      icons.forEach(icon => {
-        expect(icon).toHaveAttribute('aria-hidden', 'true');
+      // Lucide icons are SVG elements with aria-hidden attribute
+      const svgs = document.querySelectorAll('svg[aria-hidden="true"]');
+      expect(svgs.length).toBeGreaterThan(0);
+      svgs.forEach(svg => {
+        expect(svg).toHaveAttribute('aria-hidden', 'true');
       });
     });
   });
