@@ -7,6 +7,9 @@
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
   transition: transform var(--transition-base), box-shadow var(--transition-base);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
 }
 
 .session-counter:hover {
@@ -17,12 +20,17 @@
 .session-counter__content {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-3);
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 .session-counter__icon {
   color: var(--success);
   flex-shrink: 0;
+  width: 20px;
+  height: 20px;
 }
 
 .session-counter__text {
@@ -30,6 +38,7 @@
   font-size: var(--text-base);
   font-weight: 500;
   color: var(--text-secondary);
+  text-align: center;
 }
 
 .session-counter__count {
@@ -47,6 +56,7 @@
   border-radius: var(--radius-full);
   margin-left: var(--space-2);
   transition: transform var(--transition-fast), background-color var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .session-counter__count[data-updating="true"] {
@@ -65,10 +75,32 @@
   }
 }
 
-/* Mobile adjustments */
+/* Tablet adjustments (768px and below) */
+@media (max-width: 768px) {
+  .session-counter {
+    padding: var(--space-3) var(--space-5);
+    max-width: 100%;
+  }
+  
+  .session-counter__text {
+    font-size: var(--text-base);
+  }
+}
+
+/* Mobile adjustments (480px and below) */
 @media (max-width: 480px) {
   .session-counter {
     padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+  
+  .session-counter__content {
+    gap: var(--space-2);
+  }
+  
+  .session-counter__icon {
+    width: 18px;
+    height: 18px;
   }
   
   .session-counter__text {
@@ -79,5 +111,23 @@
     min-width: 1.75rem;
     height: 1.75rem;
     font-size: var(--text-xs);
+    margin-left: var(--space-1);
+  }
+}
+
+/* Small mobile adjustments (360px and below) */
+@media (max-width: 360px) {
+  .session-counter {
+    padding: var(--space-2) var(--space-3);
+  }
+  
+  .session-counter__text {
+    font-size: var(--text-xs);
+  }
+  
+  .session-counter__count {
+    min-width: 1.5rem;
+    height: 1.5rem;
+    font-size: 10px;
   }
 }

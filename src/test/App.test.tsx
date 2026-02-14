@@ -10,12 +10,27 @@ describe('App Setup', () => {
 
   it('renders with Lucide Timer icon', () => {
     render(<App />);
-    const timerIcon = document.querySelector('svg');
+    const timerIcon = document.querySelector('.app-header__icon svg');
     expect(timerIcon).toBeInTheDocument();
   });
 
-  it('renders the subtitle', () => {
+  it('renders the theme toggle button', () => {
     render(<App />);
-    expect(screen.getByText('Ready to focus?')).toBeInTheDocument();
+    expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
+  });
+
+  it('renders the timer display', () => {
+    render(<App />);
+    expect(screen.getByTestId('timer-display')).toBeInTheDocument();
+  });
+
+  it('renders the timer controls', () => {
+    render(<App />);
+    expect(screen.getByTestId('timer-controls')).toBeInTheDocument();
+  });
+
+  it('renders the settings button', () => {
+    render(<App />);
+    expect(screen.getByTestId('settings-button')).toBeInTheDocument();
   });
 });

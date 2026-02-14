@@ -45,8 +45,9 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   totalTime,
   mode,
 }) => {
-  const radius = 120;
-  const strokeWidth = 8;
+  // Use responsive radius - will be constrained by CSS max-width
+  const radius = 140;
+  const strokeWidth = 10;
   const normalizedRadius = radius - strokeWidth / 2;
   const circumference = normalizedRadius * 2 * Math.PI;
   const progress = totalTime > 0 ? timeRemaining / totalTime : 0;
@@ -56,15 +57,17 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   const modeLabel = getModeLabel(mode);
   const modeColor = getModeColor(mode);
 
+  // Calculate viewBox dimensions
+  const viewBoxSize = radius * 2;
+
   return (
     <div className="timer-display" data-testid="timer-display">
       <div className="timer-display__container">
         {/* Circular Progress SVG */}
         <svg
           className="timer-display__ring"
-          width={radius * 2}
-          height={radius * 2}
-          viewBox={`0 0 ${radius * 2} ${radius * 2}`}
+          viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}
+          preserveAspectRatio="xMidYMid meet"
           data-testid="timer-ring"
         >
           {/* Background circle */}

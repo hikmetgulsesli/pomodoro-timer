@@ -1,0 +1,79 @@
+/* Theme Toggle Component Styles */
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: 
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  background-color: var(--surface-tertiary);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.theme-toggle:active {
+  transform: translateY(0);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.theme-toggle__icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-slow);
+}
+
+.theme-toggle:hover .theme-toggle__icon-wrapper {
+  transform: rotate(15deg);
+}
+
+.theme-toggle__icon {
+  transition: opacity var(--transition-fast);
+}
+
+/* Dark mode specific styles */
+[data-theme="dark"] .theme-toggle {
+  background-color: var(--surface-secondary);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background-color: var(--surface-tertiary);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-toggle__icon-wrapper,
+  .theme-toggle__icon {
+    transition: none;
+  }
+  
+  .theme-toggle:hover .theme-toggle__icon-wrapper {
+    transform: none;
+  }
+}
