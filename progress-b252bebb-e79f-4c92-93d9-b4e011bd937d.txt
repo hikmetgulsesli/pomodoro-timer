@@ -600,5 +600,55 @@ src/
 
 ---
 
-## Stories Remaining: 14
+### US-010: Dark/light mode toggle ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `useTheme` hook for managing theme state with LocalStorage persistence
+- Uses LocalStorage key 'pomodoro-theme' for storing user theme preference
+- Respects system preference on first visit (checks prefers-color-scheme media query)
+- Applies theme by setting `data-theme="dark"` attribute on document element
+- Listens for system preference changes and updates theme if no user preference stored
+- Provides `toggleTheme()` to switch between light and dark modes
+- Provides `setTheme()` to set theme directly
+- Provides `isDark` boolean for easy conditional rendering
+- Created `ThemeToggle` component with Sun/Moon icons from Lucide React
+- Sun icon displays in light mode, Moon icon displays in dark mode
+- Toggle button positioned in top-right corner of app
+- Smooth hover animations with icon rotation effect
+- Full accessibility support: aria-label, title, focus-visible states
+- CSS custom properties in tokens.css already support dark mode via `[data-theme="dark"]` selector
+- Comprehensive test suite: 23 tests for useTheme hook, 16 tests for ThemeToggle component
+
+**Files Created/Modified:**
+- `src/hooks/useTheme.ts` - Theme management hook with LocalStorage persistence
+- `src/hooks/useTheme.test.ts` - Comprehensive test suite (23 tests)
+- `src/components/ThemeToggle.tsx` - Theme toggle button component
+- `src/components/ThemeToggle.css` - Component styles with hover animations
+- `src/components/ThemeToggle.test.tsx` - Component test suite (16 tests)
+- `src/App.tsx` - Integrated ThemeToggle component in header area
+
+**Acceptance Criteria Status:**
+1. ✅ Theme toggle button visible in UI (positioned top-right)
+2. ✅ Sun icon shows in light mode, moon in dark mode
+3. ✅ Clicking toggles between light and dark themes
+4. ✅ Theme persists across page reloads via LocalStorage
+5. ✅ Dark mode colors use proper CSS variables (data-theme attribute)
+6. ✅ Typecheck passes
+7. ✅ Tests for [theme-toggle] pass (39 tests total: 23 hook + 16 component)
+
+### Theme Pattern
+- Use `data-theme` attribute on document element for CSS variable scoping
+- Define dark mode colors in tokens.css using `[data-theme="dark"]` selector
+- Store theme preference in LocalStorage with key 'pomodoro-theme'
+- Respect system preference on first visit via `prefers-color-scheme` media query
+- Listen for system preference changes, but only apply if no user preference stored
+- Provide toggle function and isDark boolean for component consumption
+- Use Sun/Moon icons from Lucide React for visual indication
+- Apply smooth transitions on theme change (CSS variables update automatically)
+
+---
+
+## Stories Remaining: 10
 
