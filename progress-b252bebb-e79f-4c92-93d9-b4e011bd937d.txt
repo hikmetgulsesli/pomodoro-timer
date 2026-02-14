@@ -46,6 +46,34 @@
 8. ✅ Typecheck passes
 9. ✅ Tests for setup pass (11 tests)
 
+### US-002: Timer state hook with Pomodoro logic ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `useTimer` hook with full Pomodoro cycle logic
+- Implemented TypeScript types: `TimerMode`, `TimerState`, `TimerSettings`, `UseTimerReturn`
+- Timer states: idle, running, paused
+- Timer modes: work (25min), shortBreak (5min), longBreak (15min)
+- Auto-transition from work to break with long break after 4 pomodoros
+- Session count tracking (increments only on work completion)
+- Hook exports: timeRemaining, isRunning, mode, timerState, sessionCount, start, pause, reset, skip
+- Comprehensive test suite with 17 tests covering all functionality
+
+**Files Created/Modified:**
+- `src/hooks/useTimer.ts` - Main timer hook with Pomodoro logic
+- `src/hooks/useTimer.test.ts` - Comprehensive test suite
+
+**Acceptance Criteria Status:**
+1. ✅ useTimer hook created with proper TypeScript types
+2. ✅ Timer defaults to 25 minutes work session
+3. ✅ Transitions to 5min break after work completes
+4. ✅ Transitions to 15min long break after 4 pomodoros
+5. ✅ Session count increments on work completion
+6. ✅ Hook returns: timeRemaining, isRunning, mode, sessionCount, start, pause, reset
+7. ✅ Typecheck passes
+8. ✅ Tests for [timer-hook] pass (17 tests)
+
 ---
 
 ## Codebase Patterns
@@ -60,23 +88,33 @@
 ### File Structure
 ```
 src/
+├── hooks/
+│   ├── useTimer.ts       # Timer hook with Pomodoro logic
+│   └── useTimer.test.ts  # Hook tests (co-located)
 ├── styles/
-│   └── tokens.css       # Design tokens
+│   └── tokens.css        # Design tokens
 ├── test/
-│   ├── setup.ts         # Test configuration
-│   └── *.test.tsx       # Test files
-├── App.tsx              # Main app component
-├── main.tsx             # Entry point
-└── index.css            # Global styles
+│   ├── setup.ts          # Test configuration
+│   └── *.test.tsx        # Component tests
+├── App.tsx               # Main app component
+├── main.tsx              # Entry point
+└── index.css             # Global styles
 ```
 
 ### Testing Pattern
 - Vitest for test runner
 - @testing-library/react for component tests
 - jsdom for DOM environment
-- Tests co-located in src/test/
+- Tests co-located with source (`*.test.ts` next to `*.ts`)
+- Use `vi.useFakeTimers()` and `vi.useRealTimers()` for timer tests
+
+### Hook Pattern
+- Export types alongside hook for consumer use
+- Use refs for settings to avoid re-renders
+- Cleanup intervals in useEffect return
+- State machine approach (idle/running/paused)
 
 ---
 
-## Stories Remaining: 26
+## Stories Remaining: 24
 
