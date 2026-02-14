@@ -379,7 +379,44 @@ src/
 - Cleanup AudioContext on unmount
 - Mock AudioContext with configurable: true property descriptor to allow redefinition in tests
 
+### Keyboard Shortcuts Pattern
+- Use window.addEventListener('keydown') with proper cleanup in useEffect return
+- Check document.activeElement to avoid triggering shortcuts when typing in input fields
+- Prevent default on Space to avoid page scroll
+- Use refs to store callback options to avoid re-attaching listeners on every render
+- Support enabled/disabled state for conditional activation
+
 ---
 
-## Stories Remaining: 18
+### US-007: Keyboard shortcuts ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `useKeyboardShortcuts` hook with global keyboard listener (window keydown)
+- Space key: toggles timer between running and paused states
+- R key: resets timer to current mode's initial duration
+- Shortcuts are disabled when user is focused on input elements (input, textarea, select, contenteditable)
+- Prevents default on Space to avoid page scroll
+- Prevents default on R key for consistent behavior
+- Hook accepts options: timerState, onStart, onPause, onReset, enabled
+- Returns isActive boolean indicating if shortcuts are enabled
+- Uses refs to avoid re-attaching listeners on every render
+- Comprehensive test suite with 18 tests covering all functionality
+
+**Files Created/Modified:**
+- `src/hooks/useKeyboardShortcuts.ts` - Keyboard shortcuts hook
+- `src/hooks/useKeyboardShortcuts.test.ts` - Test suite (18 tests)
+
+**Acceptance Criteria Status:**
+1. ✅ Space key toggles timer between running and paused
+2. ✅ R key resets timer to current mode duration
+3. ✅ Keyboard shortcuts work when not focused on input fields
+4. ✅ Prevent default on Space to avoid page scroll
+5. ✅ Typecheck passes
+6. ✅ Tests for [keyboard-shortcuts] pass (18 tests)
+
+---
+
+## Stories Remaining: 16
 
