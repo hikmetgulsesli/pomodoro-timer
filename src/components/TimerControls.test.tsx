@@ -1,176 +1,205 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { TimerControls } from './TimerControls';
 import type { TimerState } from '../hooks/useTimer';
 
 describe('TimerControls', () => {
-  const defaultProps = {
-    timerState: 'idle' as TimerState,
-    onStart: vi.fn(),
-    onPause: vi.fn(),
-    onReset: vi.fn(),
+  const mockOnStart = vi.fn();
+  const mockOnPause = vi.fn();
+  const mockOnReset = vi.fn();
+
+  const renderTimerControls = (timerState: TimerState) => {
+    return render(
+      <TimerControls
+        timerState={timerState}
+        onStart={mockOnStart}
+        onPause={mockOnPause}
+        onReset={mockOnReset}
+      />
+    );
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  describe('Rendering', () => {
-    it('renders the component', () => {
-      render(<TimerControls {...defaultProps} />);
-      expect(screen.getByTestId('timer-controls')).toBeInTheDocument();
-    });
+  describe('Play/Pause Button', () => {
+    it('renders Play icon and "Start" label when timer is idle', () => {
+      renderTimerControls('idle');
 
-    it('renders play/pause button', () => {
-      render(<TimerControls {...defaultProps} />);
-      expect(screen.getByTestId('play-pause-button')).toBeInTheDocument();
-    });
-
-    it('renders reset button', () => {
-      render(<TimerControls {...defaultProps} />);
-      expect(screen.getByTestId('reset-button')).toBeInTheDocument();
-    });
-  });
-
-  describe('Play/Pause Button States', () => {
-    it('shows Play icon and "Start" label when idle', () => {
-      render(<TimerControls {...defaultProps} timerState="idle" />);
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      expect(playPauseButton).toBeInTheDocument();
+      expect(playPauseButton).toHaveTextContent('Start');
+      expect(playPauseButton).toHaveAttribute('aria-label', 'Start timer');
       
-      const button = screen.getByTestId('play-pause-button');
-      expect(button).toHaveAttribute('aria-label', 'Start timer');
-      expect(button).toHaveTextContent('Start');
-      expect(button.querySelector('svg')).toBeInTheDocument();
+      // Check for keyboard shortcut hint
+      expect(playPauseButton).toHaveTextContent('Space');
     });
 
-    it('shows Play icon and "Resume" label when paused', () => {
-      render(<TimerControls {...defaultProps} timerState="paused" />);
-      
-      const button = screen.getByTestId('play-pause-button');
-      expect(button).toHaveAttribute('aria-label', 'Start timer');
-      expect(button).toHaveTextContent('Resume');
+    it('renders Play icon and "Resume" label when timer is paused', () => {
+      renderTimerControls('paused');
+
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      expect(playPauseButton).toBeInTheDocument();
+      expect(playPauseButton).toHaveTextContent('Resume');
+      expect(playPauseButton).toHaveAttribute('aria-label', 'Start timer');
     });
 
-    it('shows Pause icon and "Pause" label when running', () => {
-      render(<TimerControls {...defaultProps} timerState="running" />);
-      
-      const button = screen.getByTestId('play-pause-button');
-      expect(button).toHaveAttribute('aria-label', 'Pause timer');
-      expect(button).toHaveTextContent('Pause');
-    });
-  });
+    it('renders Pause icon and "Pause" label when timer is running', () => {
+      renderTimerControls('running');
 
-  describe('Button Interactions', () => {
-    it('calls onStart when play button clicked while idle', () => {
-      render(<TimerControls {...defaultProps} timerState="idle" />);
-      
-      fireEvent.click(screen.getByTestId('play-pause-button'));
-      expect(defaultProps.onStart).toHaveBeenCalledTimes(1);
-      expect(defaultProps.onPause).not.toHaveBeenCalled();
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      expect(playPauseButton).toBeInTheDocument();
+      expect(playPauseButton).toHaveTextContent('Pause');
+      expect(playPauseButton).toHaveAttribute('aria-label', 'Pause timer');
     });
 
-    it('calls onStart when play button clicked while paused', () => {
-      render(<TimerControls {...defaultProps} timerState="paused" />);
-      
-      fireEvent.click(screen.getByTestId('play-pause-button'));
-      expect(defaultProps.onStart).toHaveBeenCalledTimes(1);
-      expect(defaultProps.onPause).not.toHaveBeenCalled();
+    it('calls onStart when clicked while idle', () => {
+      renderTimerControls('idle');
+
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      fireEvent.click(playPauseButton);
+
+      expect(mockOnStart).toHaveBeenCalledTimes(1);
+      expect(mockOnPause).not.toHaveBeenCalled();
     });
 
-    it('calls onPause when pause button clicked while running', () => {
-      render(<TimerControls {...defaultProps} timerState="running" />);
-      
-      fireEvent.click(screen.getByTestId('play-pause-button'));
-      expect(defaultProps.onPause).toHaveBeenCalledTimes(1);
-      expect(defaultProps.onStart).not.toHaveBeenCalled();
+    it('calls onStart when clicked while paused', () => {
+      renderTimerControls('paused');
+
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      fireEvent.click(playPauseButton);
+
+      expect(mockOnStart).toHaveBeenCalledTimes(1);
+      expect(mockOnPause).not.toHaveBeenCalled();
     });
 
-    it('calls onReset when reset button clicked', () => {
-      render(<TimerControls {...defaultProps} />);
-      
-      fireEvent.click(screen.getByTestId('reset-button'));
-      expect(defaultProps.onReset).toHaveBeenCalledTimes(1);
+    it('calls onPause when clicked while running', () => {
+      renderTimerControls('running');
+
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      fireEvent.click(playPauseButton);
+
+      expect(mockOnPause).toHaveBeenCalledTimes(1);
+      expect(mockOnStart).not.toHaveBeenCalled();
+    });
+
+    it('toggles correctly when state changes', () => {
+      const { rerender } = renderTimerControls('idle');
+
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      expect(playPauseButton).toHaveTextContent('Start');
+
+      // Change to running
+      rerender(
+        <TimerControls
+          timerState="running"
+          onStart={mockOnStart}
+          onPause={mockOnPause}
+          onReset={mockOnReset}
+        />
+      );
+      expect(playPauseButton).toHaveTextContent('Pause');
+
+      // Change to paused
+      rerender(
+        <TimerControls
+          timerState="paused"
+          onStart={mockOnStart}
+          onPause={mockOnPause}
+          onReset={mockOnReset}
+        />
+      );
+      expect(playPauseButton).toHaveTextContent('Resume');
     });
   });
 
   describe('Reset Button', () => {
-    it('shows rotate-left icon', () => {
-      render(<TimerControls {...defaultProps} />);
+    it('renders Reset button with rotate-left icon', () => {
+      renderTimerControls('idle');
+
+      const resetButton = screen.getByTestId('timer-reset-button');
+      expect(resetButton).toBeInTheDocument();
+      expect(resetButton).toHaveTextContent('Reset');
+      expect(resetButton).toHaveAttribute('aria-label', 'Reset timer');
       
-      const button = screen.getByTestId('reset-button');
-      expect(button).toHaveAttribute('aria-label', 'Reset timer');
-      expect(button).toHaveTextContent('Reset');
-      expect(button.querySelector('svg')).toBeInTheDocument();
+      // Check for keyboard shortcut hint
+      expect(resetButton).toHaveTextContent('R');
     });
 
-    it('calls onReset when clicked in any state', () => {
-      const states: TimerState[] = ['idle', 'running', 'paused'];
-      
-      states.forEach((state) => {
-        const onReset = vi.fn();
-        const { unmount } = render(
-          <TimerControls {...defaultProps} timerState={state} onReset={onReset} />
-        );
-        
-        fireEvent.click(screen.getByTestId('reset-button'));
-        expect(onReset).toHaveBeenCalledTimes(1);
-        
-        unmount();
-      });
-    });
-  });
+    it('calls onReset when clicked', () => {
+      renderTimerControls('running');
 
-  describe('Keyboard Shortcuts Display', () => {
-    it('displays Space shortcut hint on play/pause button', () => {
-      render(<TimerControls {...defaultProps} />);
-      
-      const button = screen.getByTestId('play-pause-button');
-      expect(button).toHaveTextContent('Space');
+      const resetButton = screen.getByTestId('timer-reset-button');
+      fireEvent.click(resetButton);
+
+      expect(mockOnReset).toHaveBeenCalledTimes(1);
     });
 
-    it('displays R shortcut hint on reset button', () => {
-      render(<TimerControls {...defaultProps} />);
-      
-      const button = screen.getByTestId('reset-button');
-      expect(button).toHaveTextContent('R');
+    it('calls onReset when clicked while idle', () => {
+      renderTimerControls('idle');
+
+      const resetButton = screen.getByTestId('timer-reset-button');
+      fireEvent.click(resetButton);
+
+      expect(mockOnReset).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onReset when clicked while paused', () => {
+      renderTimerControls('paused');
+
+      const resetButton = screen.getByTestId('timer-reset-button');
+      fireEvent.click(resetButton);
+
+      expect(mockOnReset).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('Accessibility', () => {
-    it('has correct aria-label for play button', () => {
-      const { rerender } = render(<TimerControls {...defaultProps} timerState="idle" />);
-      
-      expect(screen.getByTestId('play-pause-button')).toHaveAttribute('aria-label', 'Start timer');
-      
-      rerender(<TimerControls {...defaultProps} timerState="running" />);
-      expect(screen.getByTestId('play-pause-button')).toHaveAttribute('aria-label', 'Pause timer');
+    it('has correct button types', () => {
+      renderTimerControls('idle');
+
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      const resetButton = screen.getByTestId('timer-reset-button');
+
+      expect(playPauseButton).toHaveAttribute('type', 'button');
+      expect(resetButton).toHaveAttribute('type', 'button');
     });
 
-    it('has correct aria-label for reset button', () => {
-      render(<TimerControls {...defaultProps} />);
-      
-      expect(screen.getByTestId('reset-button')).toHaveAttribute('aria-label', 'Reset timer');
+    it('has aria-labels for screen readers', () => {
+      renderTimerControls('idle');
+
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      const resetButton = screen.getByTestId('timer-reset-button');
+
+      expect(playPauseButton).toHaveAttribute('aria-label');
+      expect(resetButton).toHaveAttribute('aria-label');
     });
 
-    it('icons have aria-hidden attribute', () => {
-      render(<TimerControls {...defaultProps} />);
-      
-      const icons = document.querySelectorAll('svg');
-      icons.forEach((icon) => {
+    it('hides icons from screen readers with aria-hidden', () => {
+      renderTimerControls('idle');
+
+      const icons = screen.getAllByRole('img', { hidden: true });
+      icons.forEach(icon => {
         expect(icon).toHaveAttribute('aria-hidden', 'true');
       });
     });
+  });
 
-    it('buttons are focusable', () => {
-      render(<TimerControls {...defaultProps} />);
-      
-      const playButton = screen.getByTestId('play-pause-button');
-      const resetButton = screen.getByTestId('reset-button');
-      
-      playButton.focus();
-      expect(document.activeElement).toBe(playButton);
-      
-      resetButton.focus();
-      expect(document.activeElement).toBe(resetButton);
+  describe('Styling', () => {
+    it('has primary button styling for play/pause', () => {
+      renderTimerControls('idle');
+
+      const playPauseButton = screen.getByTestId('timer-play-pause-button');
+      expect(playPauseButton).toHaveClass('timer-controls__button--primary');
+    });
+
+    it('has secondary button styling for reset', () => {
+      renderTimerControls('idle');
+
+      const resetButton = screen.getByTestId('timer-reset-button');
+      expect(resetButton).toHaveClass('timer-controls__button--secondary');
     });
   });
 });

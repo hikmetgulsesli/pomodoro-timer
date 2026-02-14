@@ -6,133 +6,96 @@
   padding: var(--space-4);
 }
 
-/* Play/Pause Button */
-.timer-controls__play-pause {
+.timer-controls__button {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   padding: var(--space-4) var(--space-6);
-  min-width: 120px;
-  background: var(--primary);
-  color: var(--text-inverse);
   border: none;
   border-radius: var(--radius-xl);
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: var(--text-base);
   cursor: pointer;
-  box-shadow: var(--shadow-md);
-  transition: transform 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  min-width: 100px;
 }
 
-.timer-controls__play-pause:hover {
-  background: var(--primary-hover);
+.timer-controls__button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Primary Button (Play/Pause) */
+.timer-controls__button--primary {
+  background-color: var(--primary);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-md);
+}
+
+.timer-controls__button--primary:hover {
+  background-color: var(--primary-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
-.timer-controls__play-pause:active {
+.timer-controls__button--primary:active {
   transform: translateY(0);
   box-shadow: var(--shadow-sm);
 }
 
-.timer-controls__play-pause:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-/* Reset Button */
-.timer-controls__reset {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-4) var(--space-6);
-  min-width: 120px;
-  background: var(--surface-secondary);
+/* Secondary Button (Reset) */
+.timer-controls__button--secondary {
+  background-color: var(--surface-tertiary);
   color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: var(--text-base);
-  cursor: pointer;
-  transition: transform 200ms ease, background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  box-shadow: var(--shadow-sm);
 }
 
-.timer-controls__reset:hover {
-  background: var(--surface-tertiary);
-  border-color: var(--border-strong);
+.timer-controls__button--secondary:hover {
+  background-color: var(--border);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
-.timer-controls__reset:active {
+.timer-controls__button--secondary:active {
   transform: translateY(0);
   box-shadow: var(--shadow-sm);
 }
 
-.timer-controls__reset:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-/* Icon */
 .timer-controls__icon {
   width: 24px;
   height: 24px;
-  transition: transform 200ms ease;
+  transition: transform var(--transition-fast);
 }
 
-.timer-controls__play-pause:hover .timer-controls__icon,
-.timer-controls__reset:hover .timer-controls__icon {
+.timer-controls__button:hover .timer-controls__icon {
   transform: scale(1.1);
 }
 
-/* Label */
 .timer-controls__label {
   font-size: var(--text-sm);
 }
 
-/* Keyboard Shortcut Hint */
 .timer-controls__shortcut {
   font-family: var(--font-body);
   font-size: var(--text-xs);
   font-weight: 500;
-  color: var(--text-tertiary);
-  background: var(--surface-tertiary);
   padding: var(--space-1) var(--space-2);
+  background-color: rgba(0, 0, 0, 0.1);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  min-width: 24px;
-  text-align: center;
-}
-
-.timer-controls__play-pause .timer-controls__shortcut {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--text-inverse);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-/* Dark mode adjustments */
-[data-theme="dark"] .timer-controls__shortcut {
-  background: var(--surface-tertiary);
-  color: var(--text-secondary);
+  opacity: 0.7;
 }
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
   .timer-controls {
     gap: var(--space-3);
-    padding: var(--space-3);
   }
 
-  .timer-controls__play-pause,
-  .timer-controls__reset {
-    min-width: 100px;
+  .timer-controls__button {
+    min-width: 80px;
     padding: var(--space-3) var(--space-4);
   }
 
@@ -140,18 +103,33 @@
     width: 20px;
     height: 20px;
   }
+
+  .timer-controls__label {
+    font-size: var(--text-xs);
+  }
+
+  .timer-controls__shortcut {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .timer-controls__play-pause,
-  .timer-controls__reset,
+  .timer-controls__button,
   .timer-controls__icon {
     transition: none;
   }
 
-  .timer-controls__play-pause:hover,
-  .timer-controls__reset:hover {
+  .timer-controls__button:hover {
+    transform: none;
+  }
+
+  .timer-controls__button:active {
+    transform: none;
+  }
+
+  .timer-controls__button:hover .timer-controls__icon {
     transform: none;
   }
 }

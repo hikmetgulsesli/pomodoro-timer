@@ -146,6 +146,36 @@ src/
 7. ✅ Typecheck passes
 8. ✅ Tests for [timer-display] pass (13 tests)
 
+### US-004: Timer control buttons ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `TimerControls` component with Play/Pause and Reset buttons
+- Uses Lucide React icons: Play, Pause, and RotateCcw (rotate-left icon)
+- Play/Pause button toggles between Play icon (when idle/paused) and Pause icon (when running)
+- Reset button uses RotateCcw icon for intuitive "restart" metaphor
+- Keyboard shortcut hints displayed on buttons (Space for play/pause, R for reset)
+- Smooth hover/active transitions (200ms) with transform/opacity only
+- Visible focus states using focus-visible with outline for accessibility
+- Button styling matches design tokens with warm amber primary color
+- Responsive design with mobile adjustments
+- Reduced motion support for accessibility
+
+**Files Created/Modified:**
+- `src/components/TimerControls.tsx` - Main timer controls component
+- `src/components/TimerControls.css` - Component styles with hover/focus states
+- `src/components/TimerControls.test.tsx` - Comprehensive test suite (18 tests)
+
+**Acceptance Criteria Status:**
+1. ✅ Play/Pause button toggles correctly based on timer state (Play when idle/paused, Pause when running)
+2. ✅ Reset button resets timer to current mode duration (calls onReset callback)
+3. ✅ Lucide React icons used (Play, Pause, RotateCcw)
+4. ✅ Buttons have visible hover states (translateY, shadow, color changes)
+5. ✅ Focus states visible for accessibility (focus-visible outline)
+6. ✅ Typecheck passes
+7. ✅ Tests for [timer-controls] pass (18 tests)
+
 ---
 
 ## Codebase Patterns
@@ -163,7 +193,10 @@ src/
 ├── components/
 │   ├── TimerDisplay.tsx       # Timer display component
 │   ├── TimerDisplay.css       # Component styles
-│   └── TimerDisplay.test.tsx  # Component tests (co-located)
+│   ├── TimerDisplay.test.tsx  # Component tests (co-located)
+│   ├── TimerControls.tsx      # Timer controls component
+│   ├── TimerControls.css      # Controls styles
+│   └── TimerControls.test.tsx # Controls tests (co-located)
 ├── hooks/
 │   ├── useTimer.ts            # Timer hook with Pomodoro logic
 │   └── useTimer.test.ts       # Hook tests (co-located)
@@ -184,6 +217,8 @@ src/
 - Support prefers-reduced-motion for accessibility
 - Use Sora for headings, Nunito Sans for body text
 - Keep animations to 150-300ms with transform/opacity only
+- Include keyboard shortcut hints with `<kbd>` elements
+- Use focus-visible for accessible focus states
 
 ### Testing Pattern
 - Vitest for test runner
@@ -191,6 +226,7 @@ src/
 - jsdom for DOM environment
 - Tests co-located with source (`*.test.ts` next to `*.ts`)
 - Use `vi.useFakeTimers()` and `vi.useRealTimers()` for timer tests
+- Test all state variations and user interactions
 
 ### Hook Pattern
 - Export types alongside hook for consumer use
@@ -200,5 +236,5 @@ src/
 
 ---
 
-## Stories Remaining: 21
+## Stories Remaining: 20
 

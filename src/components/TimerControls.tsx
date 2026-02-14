@@ -19,7 +19,7 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
   const isRunning = timerState === 'running';
   const isIdle = timerState === 'idle';
 
-  const handlePlayPause = () => {
+  const handlePrimaryAction = () => {
     if (isRunning) {
       onPause();
     } else {
@@ -29,13 +29,13 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
 
   return (
     <div className="timer-controls" data-testid="timer-controls">
-      {/* Play/Pause Button */}
+      {/* Primary Action Button (Play/Pause) */}
       <button
         type="button"
-        className="timer-controls__play-pause"
-        onClick={handlePlayPause}
+        className="timer-controls__button timer-controls__button--primary"
+        onClick={handlePrimaryAction}
         aria-label={isRunning ? 'Pause timer' : 'Start timer'}
-        data-testid="play-pause-button"
+        data-testid="timer-play-pause-button"
       >
         {isRunning ? (
           <Pause className="timer-controls__icon" aria-hidden="true" />
@@ -53,10 +53,10 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
       {/* Reset Button */}
       <button
         type="button"
-        className="timer-controls__reset"
+        className="timer-controls__button timer-controls__button--secondary"
         onClick={onReset}
         aria-label="Reset timer"
-        data-testid="reset-button"
+        data-testid="timer-reset-button"
       >
         <RotateCcw className="timer-controls__icon" aria-hidden="true" />
         <span className="timer-controls__label">Reset</span>
