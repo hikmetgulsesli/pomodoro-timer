@@ -1,0 +1,82 @@
+/* TimerDisplay Component Styles */
+
+.timer-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+}
+
+.timer-display__container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-display__ring {
+  transform: rotate(0deg);
+}
+
+.timer-display__ring-bg {
+  opacity: 0.3;
+}
+
+.timer-display__ring-progress {
+  stroke-linecap: round;
+}
+
+.timer-display__content {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.timer-display__mode {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+  transition: color 300ms ease, opacity 200ms ease;
+}
+
+.timer-display__time {
+  font-family: var(--font-heading);
+  font-size: var(--text-6xl);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+  transition: opacity 200ms ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .timer-display {
+    padding: var(--space-4);
+  }
+
+  .timer-display__time {
+    font-size: var(--text-5xl);
+  }
+
+  .timer-display__mode {
+    font-size: var(--text-base);
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .timer-display__ring-progress {
+    transition: none !important;
+  }
+
+  .timer-display__mode,
+  .timer-display__time {
+    transition: none !important;
+  }
+}

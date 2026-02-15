@@ -1,0 +1,422 @@
+# Pomodoro Timer - Progress Log
+
+## Run ID: b252bebb-e79f-4c92-93d9-b4e011bd937d
+
+---
+
+## Completed Stories
+
+### US-001: Project setup and design tokens ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Initialized Vite+React+TypeScript project
+- Installed and configured Tailwind CSS v4 with @tailwindcss/vite
+- Installed lucide-react for SVG icons
+- Created design tokens CSS file (`src/styles/tokens.css`) with warm amber/orange palette
+- Configured Google Fonts (Sora + Nunito Sans) in index.html
+- Set up Vite config for port 3507
+- Created .env.example and updated .gitignore
+- Set up Vitest with @testing-library/react for testing
+- Created initial test suite for setup verification
+
+**Files Created/Modified:**
+- `vite.config.ts` - Added tailwindcss plugin, configured port 3507
+- `vitest.config.ts` - Test configuration
+- `index.html` - Added Google Fonts, VITE_APP_TITLE placeholder
+- `src/index.css` - Base styles with design tokens
+- `src/styles/tokens.css` - CSS custom properties for warm color palette
+- `src/App.tsx` - Basic app component with Lucide icon
+- `.env.example` - Environment variables template
+- `.gitignore` - Added node_modules, .env, dist
+- `src/test/setup.ts` - Test setup file
+- `src/test/App.test.tsx` - App component tests
+- `src/test/tokens.test.ts` - Design tokens tests
+- `src/test/setup.test.ts` - Project setup tests
+
+**Acceptance Criteria Status:**
+1. ✅ Vite+React+TypeScript project runs on port 3507
+2. ✅ Design tokens CSS file created with --primary, --accent, --surface, --text, etc.
+3. ✅ Google Fonts link added for Sora + Nunito Sans
+4. ✅ lucide-react installed and configured
+5. ✅ Tailwind configured with custom color tokens
+6. ✅ .gitignore includes node_modules, .env, dist
+7. ✅ .env.example created with VITE_APP_TITLE placeholder
+8. ✅ Typecheck passes
+9. ✅ Tests for setup pass (11 tests)
+
+### US-002: Timer state hook with Pomodoro logic ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `useTimer` hook with full Pomodoro cycle logic
+- Implemented TypeScript types: `TimerMode`, `TimerState`, `TimerSettings`, `UseTimerReturn`
+- Timer states: idle, running, paused
+- Timer modes: work (25min), shortBreak (5min), longBreak (15min)
+- Auto-transition from work to break with long break after 4 pomodoros
+- Session count tracking (increments only on work completion)
+- Hook exports: timeRemaining, isRunning, mode, timerState, sessionCount, start, pause, reset, skip
+- Comprehensive test suite with 17 tests covering all functionality
+
+**Files Created/Modified:**
+- `src/hooks/useTimer.ts` - Main timer hook with Pomodoro logic
+- `src/hooks/useTimer.test.ts` - Comprehensive test suite
+
+**Acceptance Criteria Status:**
+1. ✅ useTimer hook created with proper TypeScript types
+2. ✅ Timer defaults to 25 minutes work session
+3. ✅ Transitions to 5min break after work completes
+4. ✅ Transitions to 15min long break after 4 pomodoros
+5. ✅ Session count increments on work completion
+6. ✅ Hook returns: timeRemaining, isRunning, mode, sessionCount, start, pause, reset
+7. ✅ Typecheck passes
+8. ✅ Tests for [timer-hook] pass (17 tests)
+
+---
+
+## Codebase Patterns
+
+### Design System
+- **Primary Color:** Amber-500 (#f59e0b) - warm, focused aesthetic
+- **Font Pair:** Sora (headings) + Nunito Sans (body)
+- **Icons:** Lucide React (SVG only, no emoji)
+- **Animations:** 150-300ms, transform/opacity only
+- **CSS Variables:** All design tokens in tokens.css
+
+### File Structure
+```
+src/
+├── hooks/
+│   ├── useTimer.ts       # Timer hook with Pomodoro logic
+│   └── useTimer.test.ts  # Hook tests (co-located)
+├── styles/
+│   └── tokens.css        # Design tokens
+├── test/
+│   ├── setup.ts          # Test configuration
+│   └── *.test.tsx        # Component tests
+├── App.tsx               # Main app component
+├── main.tsx              # Entry point
+└── index.css             # Global styles
+```
+
+### Testing Pattern
+- Vitest for test runner
+- @testing-library/react for component tests
+- jsdom for DOM environment
+- Tests co-located with source (`*.test.ts` next to `*.ts`)
+- Use `vi.useFakeTimers()` and `vi.useRealTimers()` for timer tests
+
+### Hook Pattern
+- Export types alongside hook for consumer use
+- Use refs for settings to avoid re-renders
+- Cleanup intervals in useEffect return
+- State machine approach (idle/running/paused)
+
+---
+
+### US-003: Timer display component with progress indicator ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `TimerDisplay` component with circular progress indicator using SVG stroke-dasharray technique
+- Displays time remaining in MM:SS format with large readable typography
+- Shows current mode label (Work/Short Break/Long Break) with appropriate colors
+- Progress ring animates smoothly with 300ms transitions using transform/opacity
+- Uses CSS custom properties (--primary, --timer-work, --timer-break, --timer-long-break) for colors
+- Component accepts timeRemaining, totalTime, and mode as props
+- Comprehensive test suite with 13 tests covering all functionality
+- Responsive design with mobile adjustments
+- Reduced motion support for accessibility
+
+**Files Created/Modified:**
+- `src/components/TimerDisplay.tsx` - Main timer display component with circular progress
+- `src/components/TimerDisplay.css` - Component styles with responsive and reduced-motion support
+- `src/components/TimerDisplay.test.tsx` - Comprehensive test suite (13 tests)
+
+**Acceptance Criteria Status:**
+1. ✅ TimerDisplay component renders time in MM:SS format
+2. ✅ Circular progress indicator shows percentage remaining using stroke-dasharray
+3. ✅ Mode label displays current phase (Work/Short Break/Long Break)
+4. ✅ Progress ring uses --primary color (and mode-specific colors from tokens)
+5. ✅ Component accepts timeRemaining, totalTime, mode as props
+6. ✅ Animations use transform/opacity only, 150-300ms
+7. ✅ Typecheck passes
+8. ✅ Tests for [timer-display] pass (13 tests)
+
+### US-004: Timer control buttons ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `TimerControls` component with Play/Pause and Reset buttons
+- Uses Lucide React icons: Play, Pause, and RotateCcw (rotate-left icon)
+- Play/Pause button toggles between Play icon (when idle/paused) and Pause icon (when running)
+- Reset button uses RotateCcw icon for intuitive "restart" metaphor
+- Keyboard shortcut hints displayed on buttons (Space for play/pause, R for reset)
+- Smooth hover/active transitions (200ms) with transform/opacity only
+- Visible focus states using focus-visible with outline for accessibility
+- Button styling matches design tokens with warm amber primary color
+- Responsive design with mobile adjustments
+- Reduced motion support for accessibility
+
+**Files Created/Modified:**
+- `src/components/TimerControls.tsx` - Main timer controls component
+- `src/components/TimerControls.css` - Component styles with hover/focus states
+- `src/components/TimerControls.test.tsx` - Comprehensive test suite (18 tests)
+
+**Acceptance Criteria Status:**
+1. ✅ Play/Pause button toggles correctly based on timer state (Play when idle/paused, Pause when running)
+2. ✅ Reset button resets timer to current mode duration (calls onReset callback)
+3. ✅ Lucide React icons used (Play, Pause, RotateCcw)
+4. ✅ Buttons have visible hover states (translateY, shadow, color changes)
+5. ✅ Focus states visible for accessibility (focus-visible outline)
+6. ✅ Typecheck passes
+7. ✅ Tests for [timer-controls] pass (18 tests)
+
+---
+
+## Codebase Patterns
+
+### Design System
+- **Primary Color:** Amber-500 (#f59e0b) - warm, focused aesthetic
+- **Font Pair:** Sora (headings) + Nunito Sans (body)
+- **Icons:** Lucide React (SVG only, no emoji)
+- **Animations:** 150-300ms, transform/opacity only
+- **CSS Variables:** All design tokens in tokens.css
+
+### File Structure
+```
+src/
+├── components/
+│   ├── TimerDisplay.tsx       # Timer display component
+│   ├── TimerDisplay.css       # Component styles
+│   ├── TimerDisplay.test.tsx  # Component tests (co-located)
+│   ├── TimerControls.tsx      # Timer controls component
+│   ├── TimerControls.css      # Controls styles
+│   └── TimerControls.test.tsx # Controls tests (co-located)
+├── hooks/
+│   ├── useTimer.ts            # Timer hook with Pomodoro logic
+│   └── useTimer.test.ts       # Hook tests (co-located)
+├── styles/
+│   └── tokens.css             # Design tokens
+├── test/
+│   ├── setup.ts               # Test configuration
+│   └── *.test.tsx             # Other tests
+├── App.tsx                    # Main app component
+├── main.tsx                   # Entry point
+└── index.css                  # Global styles
+```
+
+### Component Pattern
+- Create component with .tsx, .css, and .test.tsx files
+- Use CSS custom properties from tokens.css for theming
+- Add data-testid attributes for testing
+- Support prefers-reduced-motion for accessibility
+- Use Sora for headings, Nunito Sans for body text
+- Keep animations to 150-300ms with transform/opacity only
+- Include keyboard shortcut hints with `<kbd>` elements
+- Use focus-visible for accessible focus states
+
+### Testing Pattern
+- Vitest for test runner
+- @testing-library/react for component tests
+- jsdom for DOM environment
+- Tests co-located with source (`*.test.ts` next to `*.ts`)
+- Use `vi.useFakeTimers()` and `vi.useRealTimers()` for timer tests
+- Test all state variations and user interactions
+
+### Hook Pattern
+- Export types alongside hook for consumer use
+- Use refs for settings to avoid re-renders
+- Cleanup intervals in useEffect return
+- State machine approach (idle/running/paused)
+
+---
+
+### US-005: Session counter display ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `SessionCounter` component that displays completed Pomodoro session count
+- Uses LocalStorage key 'pomodoro-sessions' for persistence across page reloads
+- Loads count from LocalStorage on component mount
+- Updates LocalStorage whenever a new work session completes (count increments)
+- Displays encouraging messages based on count (e.g., "Great focus!" for 4+, "Amazing productivity!" for 8+)
+- Shows integer count in a styled badge with CheckCircle2 icon from Lucide React
+- Includes accessibility features: aria-live for screen reader announcements, aria-label on count
+- Smooth hover animations (200ms) with transform/opacity only
+- Responsive design with mobile adjustments
+- Reduced motion support for accessibility
+- Comprehensive test suite with 16 tests covering rendering, LocalStorage persistence, counter increment behavior, and accessibility
+
+**Files Created/Modified:**
+- `src/components/SessionCounter.tsx` - Session counter component with LocalStorage persistence
+- `src/components/SessionCounter.css` - Component styles with hover states and responsive design
+- `src/components/SessionCounter.test.tsx` - Comprehensive test suite (16 tests)
+
+**Acceptance Criteria Status:**
+1. ✅ Session counter displays integer count
+2. ✅ Count persists across page reloads via LocalStorage
+3. ✅ Counter increments when work session completes
+4. ✅ Uses LocalStorage key 'pomodoro-sessions'
+5. ✅ Typecheck passes
+6. ✅ Tests for [session-counter] pass (16 tests)
+
+### US-006: Sound notification on timer complete ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `useSound` hook using Web Audio API to generate pleasant bell/chime sounds
+- Work complete: Higher pitch bell sound (880 Hz A5) with harmonics for rich tone
+- Break complete: Gentle two-note chime (C5 + E5) for a softer notification
+- Volume control with LocalStorage persistence (key: 'pomodoro-sound-volume')
+- Default volume set to 0.5 (50%) for comfortable listening
+- AudioContext automatically resumes if suspended (browser autoplay policy)
+- Integrated with useTimer hook via callback options: `onWorkComplete` and `onBreakComplete`
+- Sounds play automatically when timer reaches zero
+- Proper cleanup of AudioContext on component unmount
+- Fixed test mocking issues with AudioContext global redefinition
+- Comprehensive test suite with 18 tests covering initialization, volume control, sound playback, and cleanup
+
+**Files Created/Modified:**
+- `src/hooks/useSound.ts` - Sound hook with Web Audio API implementation
+- `src/hooks/useSound.test.ts` - Comprehensive test suite (18 tests, fixed mocking issues)
+- `src/hooks/useTimer.ts` - Added UseTimerOptions interface with onWorkComplete/onBreakComplete callbacks
+- `src/hooks/useTimer.test.ts` - Added tests for sound notification callbacks (8 tests)
+
+**Acceptance Criteria Status:**
+1. ✅ Sound plays when work timer completes (bell sound)
+2. ✅ Sound plays when break timer completes (chime sound)
+3. ✅ Audio generated via Web Audio API (no external files needed, no licensing issues)
+4. ✅ Sounds are pleasant, not jarring (bell with harmonics, gentle chime)
+5. ✅ Typecheck passes
+6. ✅ Tests for [sound-notification] pass (18 tests)
+
+---
+
+## Codebase Patterns
+
+### Design System
+- **Primary Color:** Amber-500 (#f59e0b) - warm, focused aesthetic
+- **Font Pair:** Sora (headings) + Nunito Sans (body)
+- **Icons:** Lucide React (SVG only, no emoji)
+- **Animations:** 150-300ms, transform/opacity only
+- **CSS Variables:** All design tokens in tokens.css
+
+### File Structure
+```
+src/
+├── components/
+│   ├── TimerDisplay.tsx       # Timer display component
+│   ├── TimerDisplay.css       # Component styles
+│   ├── TimerDisplay.test.tsx  # Component tests (co-located)
+│   ├── TimerControls.tsx      # Timer controls component
+│   ├── TimerControls.css      # Controls styles
+│   ├── TimerControls.test.tsx # Controls tests (co-located)
+│   ├── SessionCounter.tsx     # Session counter component
+│   ├── SessionCounter.css     # Counter styles
+│   └── SessionCounter.test.tsx # Counter tests (co-located)
+├── hooks/
+│   ├── useTimer.ts            # Timer hook with Pomodoro logic
+│   ├── useTimer.test.ts       # Hook tests (co-located)
+│   ├── useSound.ts            # Sound notification hook
+│   └── useSound.test.ts       # Sound hook tests (co-located)
+├── styles/
+│   └── tokens.css             # Design tokens
+├── test/
+│   ├── setup.ts               # Test configuration
+│   └── *.test.tsx             # Other tests
+├── App.tsx                    # Main app component
+├── main.tsx                   # Entry point
+└── index.css                  # Global styles
+```
+
+### Component Pattern
+- Create component with .tsx, .css, and .test.tsx files
+- Use CSS custom properties from tokens.css for theming
+- Add data-testid attributes for testing
+- Support prefers-reduced-motion for accessibility
+- Use Sora for headings, Nunito Sans for body text
+- Keep animations to 150-300ms with transform/opacity only
+- Include keyboard shortcut hints with `<kbd>` elements
+- Use focus-visible for accessible focus states
+- Wrap in aria-live region for dynamic content updates
+
+### Testing Pattern
+- Vitest for test runner
+- @testing-library/react for component tests
+- jsdom for DOM environment
+- Tests co-located with source (`*.test.ts` next to `*.ts`)
+- Use `vi.useFakeTimers()` and `vi.useRealTimers()` for timer tests
+- Test all state variations and user interactions
+- Test LocalStorage interactions with beforeEach/afterEach cleanup
+
+### Hook Pattern
+- Export types alongside hook for consumer use
+- Use refs for settings to avoid re-renders
+- Cleanup intervals in useEffect return
+- State machine approach (idle/running/paused)
+
+### LocalStorage Pattern
+- Define STORAGE_KEY constant at module level
+- Wrap localStorage calls in try-catch for private browsing mode
+- Load from storage in useEffect on mount
+- Persist to storage when data changes
+- Validate parsed values before using
+
+### Sound Pattern
+- Use Web Audio API for generated sounds (no external files)
+- Create pleasant tones with oscillators and gain envelopes
+- Add harmonics for richer bell-like sounds
+- Use different frequencies for distinct notifications
+- Volume control with LocalStorage persistence
+- Handle AudioContext suspension (browser autoplay policy)
+- Cleanup AudioContext on unmount
+- Mock AudioContext with configurable: true property descriptor to allow redefinition in tests
+
+### Keyboard Shortcuts Pattern
+- Use window.addEventListener('keydown') with proper cleanup in useEffect return
+- Check document.activeElement to avoid triggering shortcuts when typing in input fields
+- Prevent default on Space to avoid page scroll
+- Use refs to store callback options to avoid re-attaching listeners on every render
+- Support enabled/disabled state for conditional activation
+
+---
+
+### US-007: Keyboard shortcuts ✅
+
+**Date:** 2026-02-14
+
+**Implementation Summary:**
+- Created `useKeyboardShortcuts` hook with global keyboard listener (window keydown)
+- Space key: toggles timer between running and paused states
+- R key: resets timer to current mode's initial duration
+- Shortcuts are disabled when user is focused on input elements (input, textarea, select, contenteditable)
+- Prevents default on Space to avoid page scroll
+- Prevents default on R key for consistent behavior
+- Hook accepts options: timerState, onStart, onPause, onReset, enabled
+- Returns isActive boolean indicating if shortcuts are enabled
+- Uses refs to avoid re-attaching listeners on every render
+- Comprehensive test suite with 18 tests covering all functionality
+
+**Files Created/Modified:**
+- `src/hooks/useKeyboardShortcuts.ts` - Keyboard shortcuts hook
+- `src/hooks/useKeyboardShortcuts.test.ts` - Test suite (18 tests)
+
+**Acceptance Criteria Status:**
+1. ✅ Space key toggles timer between running and paused
+2. ✅ R key resets timer to current mode duration
+3. ✅ Keyboard shortcuts work when not focused on input fields
+4. ✅ Prevent default on Space to avoid page scroll
+5. ✅ Typecheck passes
+6. ✅ Tests for [keyboard-shortcuts] pass (18 tests)
+
+---
+
+## Stories Remaining: 16
+
