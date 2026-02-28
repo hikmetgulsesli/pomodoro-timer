@@ -4,6 +4,9 @@
   justify-content: center;
   gap: var(--space-4);
   padding: var(--space-4);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .timer-controls__button {
@@ -21,6 +24,7 @@
   font-weight: 600;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
   min-width: 100px;
+  min-height: 80px;
 }
 
 .timer-controls__button:focus-visible {
@@ -88,20 +92,36 @@
   opacity: 0.7;
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
+/* Tablet adjustments (768px and below) */
+@media (max-width: 768px) {
   .timer-controls {
-    gap: var(--space-3);
+    gap: var(--space-4);
   }
 
   .timer-controls__button {
-    min-width: 80px;
+    min-width: 100px;
+    min-height: 80px;
+    padding: var(--space-4) var(--space-5);
+  }
+}
+
+/* Mobile adjustments (480px and below) */
+@media (max-width: 480px) {
+  .timer-controls {
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .timer-controls__button {
+    min-width: 90px;
+    min-height: 72px;
     padding: var(--space-3) var(--space-4);
+    gap: var(--space-1);
   }
 
   .timer-controls__icon {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
 
   .timer-controls__label {
@@ -111,6 +131,24 @@
   .timer-controls__shortcut {
     font-size: 10px;
     padding: 2px 6px;
+  }
+}
+
+/* Small mobile adjustments (360px and below) */
+@media (max-width: 360px) {
+  .timer-controls {
+    gap: var(--space-2);
+  }
+
+  .timer-controls__button {
+    min-width: 80px;
+    min-height: 64px;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .timer-controls__icon {
+    width: 20px;
+    height: 20px;
   }
 }
 
