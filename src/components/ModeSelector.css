@@ -79,7 +79,7 @@
   }
 
   .mode-selector__duration {
-    font-size: 10px;
+    font-size: var(--text-xxs, 0.625rem);
   }
 }
 
@@ -97,11 +97,11 @@
   }
 
   .mode-selector__label {
-    font-size: 11px;
+    font-size: var(--text-xxs, 0.625rem);
   }
 
   .mode-selector__duration {
-    font-size: 9px;
+    font-size: var(--text-xxs, 0.625rem);
   }
 }
 
