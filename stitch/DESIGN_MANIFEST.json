@@ -1,0 +1,18 @@
+{
+  "projectId": "15080488853207958593",
+  "projectName": "pomodoro-timer",
+  "screens": [
+    {
+      "screenId": "ad2ac69ece6d4894a6686fc3925dd6d6",
+      "title": "Pomodoro Timer Main Screen",
+      "htmlFile": "timer-screen.html",
+      "screenshotFile": "timer-screen.png"
+    }
+  ],
+  "designSystem": {
+    "palette": "warm",
+    "headingFont": "Sora",
+    "bodyFont": "Nunito Sans",
+    "iconLibrary": "Lucide React"
+  }
+}

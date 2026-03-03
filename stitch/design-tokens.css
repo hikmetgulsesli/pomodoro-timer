@@ -1,0 +1,16 @@
+/* Design Tokens - Pomodoro Timer */
+:root {
+  /* Colors */
+  --color-primary: #ff6b6b;
+  --color-background-light: #fff8f0;
+  --color-background-dark: #230f0f;
+  --color-text-primary: #2d1a1a;
+  --color-text-secondary: #a14545;
+
+  /* Typography */
+  --font-display: "Nunito Sans", sans-serif;
+  --font-timer: "Sora", sans-serif;
+
+  /* Spacing */
+  --spacing-unit: 0.25rem;
+}
