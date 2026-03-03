@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pomodoro Timer Main Screen</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Nunito+Sans:wght@400;600;700&amp;family=Sora:wght@600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff6b6b",
+                        "background-light": "#fff8f0",
+                        "background-dark": "#230f0f",
+                        "text-primary": "#2d1a1a",
+                        "text-secondary": "#a14545",
+                    },
+                    fontFamily: {
+                        "display": ["Nunito Sans", "sans-serif"],
+                        "timer": ["Sora", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col overflow-x-hidden transition-colors duration-200">
+<!-- Navbar -->
+<header class="w-full px-6 py-4 flex items-center justify-between bg-white/50 dark:bg-black/20 backdrop-blur-sm sticky top-0 z-50">
+<div class="flex items-center gap-3 text-text-primary dark:text-gray-100">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">timer</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Pomodoro</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-semibold text-text-primary/70 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors" href="#">Stats</a>
+<a class="text-sm font-semibold text-text-primary/70 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors" href="#">Settings</a>
+<div class="h-4 w-px bg-gray-300 dark:bg-gray-700"></div>
+<a class="text-sm font-semibold text-text-primary hover:text-primary dark:text-gray-200 transition-colors" href="#">Log In</a>
+<button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg shadow-primary/20 transition-all hover:scale-105">
+                Sign Up
+            </button>
+</nav>
+<button class="md:hidden p-2 text-text-primary dark:text-gray-100">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col items-center justify-center px-4 py-8 md:py-12">
+<div class="w-full max-w-lg flex flex-col items-center">
+<!-- Mode Selector -->
+<div class="bg-white dark:bg-white/5 p-1.5 rounded-full shadow-sm border border-primary/10 mb-12 flex relative">
+<div class="flex relative z-10">
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="mode" type="radio" value="work"/>
+<span class="block px-6 py-2 rounded-full text-sm font-bold text-text-secondary dark:text-gray-400 peer-checked:bg-primary peer-checked:text-white transition-all duration-200">Work</span>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="mode" type="radio" value="short-break"/>
+<span class="block px-6 py-2 rounded-full text-sm font-bold text-text-secondary dark:text-gray-400 peer-checked:bg-primary peer-checked:text-white transition-all duration-200">Short Break</span>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="mode" type="radio" value="long-break"/>
+<span class="block px-6 py-2 rounded-full text-sm font-bold text-text-secondary dark:text-gray-400 peer-checked:bg-primary peer-checked:text-white transition-all duration-200">Long Break</span>
+</label>
+</div>
+</div>
+<!-- Timer Ring & Display -->
+<div class="relative w-72 h-72 md:w-96 md:h-96 flex items-center justify-center mb-12 group">
+<!-- Outer Glow -->
+<div class="absolute inset-0 rounded-full bg-primary/5 dark:bg-primary/10 blur-3xl scale-90"></div>
+<!-- SVG Ring -->
+<svg class="w-full h-full transform -rotate-90 drop-shadow-xl" viewbox="0 0 100 100">
+<!-- Background Circle -->
+<circle class="text-gray-200 dark:text-gray-800" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="3"></circle>
+<!-- Progress Circle -->
+<circle class="text-primary transition-all duration-1000 ease-linear" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="283" stroke-dashoffset="70" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<!-- Center Content -->
+<div class="absolute flex flex-col items-center justify-center text-center">
+<div class="font-timer text-7xl md:text-8xl font-bold text-text-primary dark:text-gray-100 tracking-tighter mb-2">
+                        25:00
+                    </div>
+<p class="text-lg font-medium text-text-secondary dark:text-primary/80 uppercase tracking-widest text-opacity-80">Focus Time</p>
+</div>
+</div>
+<!-- Controls -->
+<div class="flex items-center gap-6 mb-8">
+<button aria-label="Reset Timer" class="p-4 rounded-2xl bg-white dark:bg-white/10 text-text-primary dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors shadow-sm border border-gray-100 dark:border-white/5 group">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-180 transition-transform duration-500">restart_alt</span>
+</button>
+<button aria-label="Start Timer" class="h-20 w-20 flex items-center justify-center rounded-3xl bg-primary text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 transition-all active:translate-y-0 active:scale-95">
+<span class="material-symbols-outlined text-5xl ml-1">play_arrow</span>
+</button>
+<button aria-label="Settings" class="p-4 rounded-2xl bg-white dark:bg-white/10 text-text-primary dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors shadow-sm border border-gray-100 dark:border-white/5">
+<span class="material-symbols-outlined text-2xl">settings</span>
+</button>
+</div>
+<!-- Session Counter -->
+<div class="bg-white/60 dark:bg-white/5 backdrop-blur-sm px-6 py-3 rounded-xl border border-primary/10 flex items-center gap-3">
+<span class="text-sm font-bold text-text-secondary dark:text-gray-400 uppercase tracking-wide">Session</span>
+<div class="flex items-center gap-1">
+<span class="text-xl">🍅</span>
+<span class="text-xl">🍅</span>
+<span class="text-xl">🍅</span>
+<span class="opacity-30 text-xl grayscale">🍅</span>
+</div>
+</div>
+<p class="mt-8 text-center text-sm text-text-secondary/60 dark:text-gray-500 italic max-w-xs">
+                "Productivity is never an accident. It is always the result of a commitment to excellence."
+            </p>
+</div>
+</main>
+</body></html>
