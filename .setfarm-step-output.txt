@@ -1,0 +1,143 @@
+############################################################
+CRITICAL: Do ALL work in THIS session. No sub-agents, no background processes.
+############################################################
+
+Verify the developer's story implementation by reading PR review comments,
+fixing issues, then merging the PR.
+
+TASK: --repo /home/setrox/projects/pomodoro-timer --branch master --task Pomodoro Timer web uygulamasi. React + Vite + Tailwind CSS. 1) 25dk calisma / 5dk mola zamanlayici 2) Baslat/Durdur/Sifirla butonlari 3) Tamamlanan pomodoro sayaci 4) Bildirim sesi 5) LocalStorage kaliciligi. Modern UI.
+REPO: /home/setrox/projects/pomodoro-timer
+BRANCH: pomodoro-timer-v1
+STORY_BRANCH: 4c73e3fd-US-002
+PR_URL: https://github.com/hikmetgulsesli/pomodoro-timer/pull/new/4c73e3fd-US-002
+CHANGES: Implemented useTimer hook with full state machine (idle, running, paused). Timer counts down from 25:00 for work, 5:00 for short break, 15:00 for long break. State transitions: start → pause → resume → complete. 1-second interval countdown logic. Automatic mode transitions (work → break → work). Session counting with configurable pomodoros before long break. Sound notification callbacks for work/break completion.
+BUILD_CMD: npm run build
+TEST_CMD: npm run test
+LINT_CMD: npm run lint
+CURRENT STORY: Story US-002: Timer State Machine
+
+Implement core Pomodoro timer logic as a React hook/useState. Define timer states: idle, running, paused, break. Handle 25-minute work sessions and 5-minute breaks. Implement state transitions: start → pause → resume → complete. Include countdown logic with 1-second intervals. Export timer state and control functions for UI consumption.
+
+Acceptance Criteria:
+  1. Timer counts down from 25:00 for work sessions
+  2. Timer counts down from 5:00 for break sessions
+  3. State transitions work correctly (idle→running→paused→idle)
+  4. Timer displays MM:SS format with leading zeros
+  5. State persists across component re-renders
+  6. Tests for timer state machine pass
+  7. Typecheck passes
+PROGRESS LOG: (no progress yet)
+
+=== VERIFY + FIX + MERGE WORKFLOW ===
+
+
+STEP 1 — Checkout and read PR reviews:
+1. cd into /home/setrox/projects/pomodoro-timer
+2. git fetch origin
+3. git checkout 4c73e3fd-US-002 && git pull origin 4c73e3fd-US-002
+4. Get PR number and read review comments:
+   PR_NUM=$(gh pr view "https://github.com/hikmetgulsesli/pomodoro-timer/pull/new/4c73e3fd-US-002" --json number --jq '.number' 2>/dev/null || echo "")
+   REVIEWS=$(gh pr view "https://github.com/hikmetgulsesli/pomodoro-timer/pull/new/4c73e3fd-US-002" --json reviews --jq '.reviews[].body' 2>/dev/null || echo "")
+   COMMENTS=$(gh pr view "https://github.com/hikmetgulsesli/pomodoro-timer/pull/new/4c73e3fd-US-002" --json comments --jq '.comments[].body' 2>/dev/null || echo "")
+   if [ -n "$PR_NUM" ]; then
+     REPO_SLUG=$(gh pr view "https://github.com/hikmetgulsesli/pomodoro-timer/pull/new/4c73e3fd-US-002" --json url --jq '.url' | sed 's|https://github.com/||;s|/pull/.*||')
+     REVIEW_COMMENTS=$(gh api "repos/$REPO_SLUG/pulls/$PR_NUM/comments" --jq '.[].body' 2>/dev/null || echo "")
+   fi
+5. If external reviews exist → read them and proceed to STEP 2
+   If NO reviews exist → skip to STEP 3 (do your own quality review instead)
+   Do NOT retry waiting for reviews — you already waited 5 minutes. Proceed with your own judgment.
+
+STEP 2 — Fix review issues (only if external reviews exist):
+1. Read ALL review suggestions and comments carefully
+2. If reviews mention issues or suggestions → fix ALL of them
+3. Run lint: npm run lint → fix any lint errors
+4. Run build: npm run build → fix any build errors
+5. Run test: npm run test → fix any test failures
+6. If fixes were needed:
+   git add -A && git commit -m "fix: address review comments for US-002"
+   git push
+
+STEP 3 — Quality + Design check (always do this, whether or not external reviews exist):
+1. Review the code changes yourself:
+   - Code exists (not just TODOs/placeholders)
+   - Tests were written for this story
+   - No hardcoded secrets, .env not committed
+1.5. Stitch design compliance (MANDATORY if stitch/ exists — FAIL on violations):
+   a. Extract all CSS variable NAMES from stitch/design-tokens.css
+   b. Search the app's CSS/TSX/JSX files for these exact variable names → FAIL if any token is defined but never used
+   c. Extract all color VALUES (hex codes) from stitch/design-tokens.css
+   d. grep all .css/.tsx/.jsx files for hex color codes NOT in stitch tokens → FAIL if unauthorized colors found
+   e. Check for @media (prefers-color-scheme: dark) → FAIL if Stitch design is light-only (no dark styles in stitch HTML)
+   f. Verify fonts match stitch/DESIGN_MANIFEST.json → FAIL if different fonts used
+   g. Check that stitch/design-tokens.css is imported (not recreated) → FAIL if a separate token file exists with different values
+   h. If ANY check above fails → fix the code yourself, commit, push, then re-check
+1.6. Completeness checks (CRITICAL - FAIL if any found):
+   - grep -rE "coming soon|Coming Soon|placeholder|TODO.*implement|work in progress" --include="*.tsx" --include="*.ts" . → FAIL if found as visible UI text content
+   - If stitch/DESIGN_MANIFEST.json exists: for each screen listed, verify a corresponding component or page implements it (search by title keywords). Missing screen = FAIL.
+   - grep -rE "blue-[0-9]+/[0-9]+" components/ → WARN: likely hardcoded Tailwind color — check if it belongs in design-tokens instead
+2. Frontend design checks (if any .css/.tsx changed):
+   - grep -rE "font-family.*system-ui|font-family.*Roboto|font-family.*Arial|font-family.*Inter" src/ → FAIL if found (banned fonts)
+   - grep -rE "fonts\.googleapis\.com|next/font" src/ → FAIL if missing (no font import)
+   - grep -rE "\-\-font-heading|\-\-font-body" src/ → FAIL if missing (no font vars)
+   - grep -rE "transition:\s*all" src/ → FAIL if found
+   - grep -rE "grid-cols-3" src/ → WARN (check asymmetry manually)
+   If any FAIL → fix yourself, commit, push before proceeding
+3. Run lint: npm run lint → fix any lint errors
+4. Run build: npm run build → fix any build errors
+5. Run test: npm run test → fix any test failures
+6. If you found issues and fixed them:
+   git add -A && git commit -m "fix: quality + design improvements for US-002"
+   git push
+
+STEP 4 — Rebase onto latest feature branch (prevents merge conflicts):
+1. git fetch origin
+2. git rebase origin/pomodoro-timer-v1
+3. If rebase conflicts occur:
+   - Read each conflicted file carefully
+   - Resolve conflicts preserving BOTH the existing feature-branch code AND this story's changes
+   - git add <resolved files> && git rebase --continue
+   - If conflict is unresolvable: git rebase --abort and proceed to merge anyway
+4. Run lint: npm run lint → fix errors
+5. Run build: npm run build → fix errors
+6. Run test: npm run test → fix failures
+7. git push --force-with-lease
+
+STEP 5 — Merge PR:
+1. gh pr comment "https://github.com/hikmetgulsesli/pomodoro-timer/pull/new/4c73e3fd-US-002" --body "Verified: lint/build/test pass. Code quality checked."
+2. Merge with fallback:
+   gh pr merge "https://github.com/hikmetgulsesli/pomodoro-timer/pull/new/4c73e3fd-US-002" --squash --delete-branch || {
+     echo "Merge failed — retrying after rebase"
+     git fetch origin && git rebase origin/pomodoro-timer-v1
+     git push --force-with-lease
+     gh pr merge "https://github.com/hikmetgulsesli/pomodoro-timer/pull/new/4c73e3fd-US-002" --squash --delete-branch
+   }
+3. Reply STATUS: done
+
+If build/test FAILS and you cannot fix:
+Reply STATUS: retry with issues list.
+
+ESCALATION MODE (retry count >= 3):
+If this story has been retried 3+ times, DO NOT send back to developer.
+Instead:
+1. Read ALL previous error output and verify feedback
+2. Fix the code YOURSELF — you have full access to the repo
+3. Run lint+build+test
+4. If you fix it → commit, push, merge PR → STATUS: done
+5. If you truly cannot fix it → STATUS: skip (story will be skipped, others continue)
+
+============================================================
+MANDATORY OUTPUT FORMAT
+============================================================
+STATUS: done
+VERIFIED: <what you confirmed>
+MERGED: true
+
+Or if issues found:
+STATUS: retry
+ISSUES:
+- <what's wrong>
+
+Or if escalation and unfixable:
+STATUS: skip
+REASON: <why this story cannot be completed>
+============================================================

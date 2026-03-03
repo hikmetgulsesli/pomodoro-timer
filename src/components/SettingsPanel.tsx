@@ -114,7 +114,8 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
       ...prev,
       volume: clampedVolume / 100,
       // Unmute when volume is changed
-      isMuted: clampedVolume === 0 ? true : false,
+      // Mute if volume is set to 0, otherwise unmute.
+      isMuted: clampedVolume === 0,
     }));
   }, []);
 
