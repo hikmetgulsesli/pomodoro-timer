@@ -9,13 +9,18 @@ import { TimerDisplay } from './components/TimerDisplay';
 import { TimerControls } from './components/TimerControls';
 import { SessionCounter } from './components/SessionCounter';
 import { SettingsPanel } from './components/SettingsPanel';
+import type { SoundSettings } from './components/SettingsPanel';
 import './App.css';
 
 function App() {
   const { settings, isLoaded, saveSettings } = useSettingsPersistence();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [soundSettings, setSoundSettings] = useState<SoundSettings>({
+    isMuted: false,
+    volume: 0.5,
+  });
   
-  const { playWorkComplete, playBreakComplete } = useSound();
+  const { playWorkComplete, playBreakComplete, setVolume } = useSound();
   
   const {
     timeRemaining,
@@ -26,8 +31,16 @@ function App() {
     pause,
     reset,
   } = useTimer(settings, {
-    onWorkComplete: playWorkComplete,
-    onBreakComplete: playBreakComplete,
+    onWorkComplete: () => {
+      if (!soundSettings.isMuted) {
+        playWorkComplete();
+      }
+    },
+    onBreakComplete: () => {
+      if (!soundSettings.isMuted) {
+        playBreakComplete();
+      }
+    },
   });
 
   useKeyboardShortcuts({
@@ -50,6 +63,11 @@ function App() {
       default:
         return settings.workDuration * 60;
     }
+  };
+
+  const handleSoundSettingsChange = (newSettings: SoundSettings) => {
+    setSoundSettings(newSettings);
+    setVolume(newSettings.volume);
   };
 
   if (!isLoaded) {
@@ -128,6 +146,8 @@ function App() {
         onClose={() => setIsSettingsOpen(false)}
         durations={settings}
         onDurationsChange={saveSettings}
+        soundSettings={soundSettings}
+        onSoundSettingsChange={handleSoundSettingsChange}
       />
     </div>
   );

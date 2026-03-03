@@ -5,6 +5,7 @@ import { SettingsPanel } from './SettingsPanel';
 describe('SettingsPanel', () => {
   const mockOnClose = vi.fn();
   const mockOnDurationsChange = vi.fn();
+  const mockOnSoundSettingsChange = vi.fn();
 
   const defaultProps = {
     isOpen: true,
@@ -15,6 +16,15 @@ describe('SettingsPanel', () => {
       longBreakDuration: 15,
     },
     onDurationsChange: mockOnDurationsChange,
+  };
+
+  const propsWithSound = {
+    ...defaultProps,
+    soundSettings: {
+      isMuted: false,
+      volume: 0.5,
+    },
+    onSoundSettingsChange: mockOnSoundSettingsChange,
   };
 
   beforeEach(() => {
@@ -89,6 +99,20 @@ describe('SettingsPanel', () => {
       render(<SettingsPanel {...defaultProps} />);
       
       expect(screen.getByTestId('settings-reset-defaults')).toBeInTheDocument();
+    });
+
+    it('renders sound settings section when soundSettings prop is provided', () => {
+      render(<SettingsPanel {...propsWithSound} />);
+      
+      expect(screen.getByText('Sound Settings')).toBeInTheDocument();
+      expect(screen.getByTestId('volume-slider')).toBeInTheDocument();
+      expect(screen.getByTestId('mute-toggle-button')).toBeInTheDocument();
+    });
+
+    it('displays volume value correctly', () => {
+      render(<SettingsPanel {...propsWithSound} />);
+      
+      expect(screen.getByTestId('volume-value')).toHaveTextContent('50%');
     });
   });
 
@@ -165,6 +189,97 @@ describe('SettingsPanel', () => {
       
       fireEvent.change(input, { target: { value: '25' } });
       expect(screen.queryByTestId('work-duration-error')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Sound Settings', () => {
+    it('toggles mute state when mute button is clicked', () => {
+      render(<SettingsPanel {...propsWithSound} />);
+      
+      const muteButton = screen.getByTestId('mute-toggle-button');
+      expect(muteButton).toHaveAttribute('aria-label', 'Mute sound');
+      
+      fireEvent.click(muteButton);
+      
+      expect(muteButton).toHaveAttribute('aria-label', 'Unmute sound');
+      expect(screen.getByTestId('volume-value')).toHaveTextContent('Muted');
+    });
+
+    it('updates volume when slider is changed', () => {
+      render(<SettingsPanel {...propsWithSound} />);
+      
+      const slider = screen.getByTestId('volume-slider');
+      fireEvent.change(slider, { target: { value: '75' } });
+      
+      expect(screen.getByTestId('volume-value')).toHaveTextContent('75%');
+    });
+
+    it('disables volume slider when muted', () => {
+      render(<SettingsPanel {...propsWithSound} />);
+      
+      const muteButton = screen.getByTestId('mute-toggle-button');
+      fireEvent.click(muteButton);
+      
+      const slider = screen.getByTestId('volume-slider');
+      expect(slider).toBeDisabled();
+    });
+
+    it('calls onSoundSettingsChange when form is saved', () => {
+      render(<SettingsPanel {...propsWithSound} />);
+      
+      const slider = screen.getByTestId('volume-slider');
+      fireEvent.change(slider, { target: { value: '75' } });
+      
+      fireEvent.click(screen.getByTestId('settings-save'));
+      
+      expect(mockOnSoundSettingsChange).toHaveBeenCalledWith({
+        isMuted: false,
+        volume: 0.75,
+      });
+    });
+
+    it('calls onSoundSettingsChange with muted state when saved', () => {
+      render(<SettingsPanel {...propsWithSound} />);
+      
+      const muteButton = screen.getByTestId('mute-toggle-button');
+      fireEvent.click(muteButton);
+      
+      fireEvent.click(screen.getByTestId('settings-save'));
+      
+      expect(mockOnSoundSettingsChange).toHaveBeenCalledWith({
+        isMuted: true,
+        volume: 0.5,
+      });
+    });
+
+    it('resets sound settings to defaults when reset button is clicked', () => {
+      render(<SettingsPanel {...propsWithSound} />);
+      
+      const slider = screen.getByTestId('volume-slider');
+      fireEvent.change(slider, { target: { value: '25' } });
+      
+      fireEvent.click(screen.getByTestId('settings-reset-defaults'));
+      
+      expect(screen.getByTestId('volume-value')).toHaveTextContent('50%');
+    });
+
+    it('unmutes when volume is changed from 0', () => {
+      render(
+        <SettingsPanel
+          {...defaultProps}
+          soundSettings={{
+            isMuted: true,
+            volume: 0,
+          }}
+          onSoundSettingsChange={mockOnSoundSettingsChange}
+        />
+      );
+      
+      const slider = screen.getByTestId('volume-slider');
+      fireEvent.change(slider, { target: { value: '25' } });
+      
+      // When volume is changed from 0, it should unmute
+      expect(screen.getByTestId('volume-value')).toHaveTextContent('25%');
     });
   });
 
@@ -310,6 +425,27 @@ describe('SettingsPanel', () => {
       
       const input = screen.getByTestId('work-duration-input');
       expect(input).toHaveAttribute('aria-describedby', 'work-duration-error');
+    });
+
+    it('mute button has correct aria-label when unmuted', () => {
+      render(<SettingsPanel {...propsWithSound} />);
+      
+      expect(screen.getByTestId('mute-toggle-button')).toHaveAttribute('aria-label', 'Mute sound');
+    });
+
+    it('mute button has correct aria-label when muted', () => {
+      render(
+        <SettingsPanel
+          {...defaultProps}
+          soundSettings={{
+            isMuted: true,
+            volume: 0.5,
+          }}
+          onSoundSettingsChange={mockOnSoundSettingsChange}
+        />
+      );
+      
+      expect(screen.getByTestId('mute-toggle-button')).toHaveAttribute('aria-label', 'Unmute sound');
     });
   });
 
