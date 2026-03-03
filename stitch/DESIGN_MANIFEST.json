@@ -1,18 +1,30 @@
 {
-  "projectId": "15080488853207958593",
+  "projectId": "12023276798184515111",
   "projectName": "pomodoro-timer",
+  "designSystem": {
+    "aesthetic": "minimal",
+    "palette": "SaaS / Productivity",
+    "heading_font": "Space Grotesk",
+    "body_font": "DM Sans",
+    "icon_library": "Lucide React"
+  },
   "screens": [
     {
-      "screenId": "ad2ac69ece6d4894a6686fc3925dd6d6",
-      "title": "Pomodoro Timer Main Screen",
-      "htmlFile": "timer-screen.html",
-      "screenshotFile": "timer-screen.png"
+      "screenId": "a913dbb62cd5437eb4395ef1184b0163",
+      "title": "Pomodoro Timer Dashboard Variant 1",
+      "htmlFile": "timer-v1.html",
+      "screenshotFile": "timer-v1.png",
+      "width": 2560,
+      "height": 2048
+    },
+    {
+      "screenId": "e33c78ed576f4830bdf2ba7df9233d7c",
+      "title": "Pomodoro Timer Dashboard Variant 2",
+      "htmlFile": "timer-v2.html",
+      "screenshotFile": "timer-v2.png",
+      "width": 2560,
+      "height": 2048
     }
   ],
-  "designSystem": {
-    "palette": "warm",
-    "headingFont": "Sora",
-    "bodyFont": "Nunito Sans",
-    "iconLibrary": "Lucide React"
-  }
+  "generatedAt": "2026-03-03T20:12:00Z"
 }

@@ -1,16 +1,40 @@
-/* Design Tokens - Pomodoro Timer */
+/* Pomodoro Timer Design Tokens */
 :root {
   /* Colors */
-  --color-primary: #ff6b6b;
-  --color-background-light: #fff8f0;
-  --color-background-dark: #230f0f;
-  --color-text-primary: #2d1a1a;
-  --color-text-secondary: #a14545;
-
+  --color-primary: #e53734;
+  --color-background-light: #f8f6f6;
+  --color-background-dark: #171111;
+  --color-surface-dark: #251a1a;
+  --color-surface-light: #ffffff;
+  
   /* Typography */
-  --font-display: "Nunito Sans", sans-serif;
-  --font-timer: "Sora", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
+  
+  /* Border Radius */
+  --radius-default: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+  --radius-full: 9999px;
+}
 
-  /* Spacing */
-  --spacing-unit: 0.25rem;
+/* Tailwind Config Reference */
+.tailwind-config {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary": "#e53734",
+        "background-light": "#f8f6f6",
+        "background-dark": "#171111", 
+        "surface-dark": "#251a1a",
+        "surface-light": "#ffffff",
+      },
+      fontFamily: {
+        "display": ["Space Grotesk", "sans-serif"],
+        "body": ["Space Grotesk", "sans-serif"] 
+      },
+      borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+    },
+  },
 }
