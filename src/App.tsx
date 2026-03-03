@@ -1,6 +1,7 @@
 import { Timer, Settings } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSettingsPersistence } from './hooks/useSettingsPersistence';
+import { useTimerPersistence } from './hooks/useTimerPersistence';
 import { useTimer } from './hooks/useTimer';
 import { useSound } from './hooks/useSound';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
@@ -12,10 +13,22 @@ import { SettingsPanel } from './components/SettingsPanel';
 import './App.css';
 
 function App() {
-  const { settings, isLoaded, saveSettings } = useSettingsPersistence();
+  const { settings, isLoaded: settingsLoaded, saveSettings } = useSettingsPersistence();
+  const { persistedState, isLoaded: timerStateLoaded, saveTimerState } = useTimerPersistence();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
   const { playWorkComplete, playBreakComplete } = useSound();
+  
+  // Determine initial state from persistence
+  const getInitialState = () => {
+    if (!persistedState) return undefined;
+    return {
+      mode: persistedState.mode,
+      timerState: persistedState.timerState === 'running' ? 'paused' : persistedState.timerState,
+      timeRemaining: persistedState.timeRemaining,
+      sessionCount: persistedState.sessionCount,
+    };
+  };
   
   const {
     timeRemaining,
@@ -28,14 +41,28 @@ function App() {
   } = useTimer(settings, {
     onWorkComplete: playWorkComplete,
     onBreakComplete: playBreakComplete,
+    autoStartBreaks: true,
+    initialState: getInitialState(),
   });
+
+  // Persist timer state whenever it changes
+  useEffect(() => {
+    if (!timerStateLoaded) return;
+    
+    saveTimerState({
+      timeRemaining,
+      mode,
+      timerState,
+      sessionCount,
+    });
+  }, [timeRemaining, mode, timerState, sessionCount, timerStateLoaded, saveTimerState]);
 
   useKeyboardShortcuts({
     timerState,
     onStart: start,
     onPause: pause,
     onReset: reset,
-    enabled: isLoaded,
+    enabled: settingsLoaded && timerStateLoaded,
   });
 
   // Calculate total time for current mode
@@ -52,7 +79,7 @@ function App() {
     }
   };
 
-  if (!isLoaded) {
+  if (!settingsLoaded || !timerStateLoaded) {
     return (
       <div className="app-container" style={{ backgroundColor: 'var(--surface)', color: 'var(--text)' }}>
         <div className="flex items-center justify-center min-h-screen">
