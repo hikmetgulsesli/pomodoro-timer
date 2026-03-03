@@ -16,6 +16,7 @@ export default defineConfig([
       reactRefresh.configs.vite,
     ],
     rules: {
+      // Disabled: false positives with React 18 concurrent features
       "react-hooks/set-state-in-effect": "off",
       "react-hooks/preserve-manual-memoization": "off",
     },
