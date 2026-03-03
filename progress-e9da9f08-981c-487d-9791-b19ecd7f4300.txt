@@ -1,0 +1,12 @@
+=== US-003: Session Counter & Auto-Switch ===
+COMPLETED: 2026-03-03T05:38:00+03:00
+FILES_CHANGED: 
+  - src/hooks/useTimer.ts (session counter, auto-switch logic)
+  - src/components/SessionCounter.tsx (session display with persistence)
+  - src/components/TimerDisplay.tsx (session type indicator)
+KEY_DECISIONS:
+  - Session counter increments only on work completion (not breaks)
+  - Auto-switch uses useEffect to transition when timer reaches 0
+  - Long break triggers after configurable number of pomodoros (default 4)
+  - Session type shown with color-coded labels in TimerDisplay
+DEPENDENCIES_ADDED: None
