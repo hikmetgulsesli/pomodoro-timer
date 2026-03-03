@@ -20,6 +20,7 @@ export interface UseTimerReturn {
   pause: () => void;
   reset: () => void;
   skip: () => void;
+  setMode: (mode: TimerMode) => void;
 }
 
 export interface UseTimerOptions {
@@ -53,7 +54,7 @@ export function useTimer(
 ): UseTimerReturn {
   const mergedSettings = { ...DEFAULT_SETTINGS, ...settings };
   
-  const [mode, setMode] = useState<TimerMode>('work');
+  const [mode, setModeState] = useState<TimerMode>('work');
   const [timerState, setTimerState] = useState<TimerState>('idle');
   const [timeRemaining, setTimeRemaining] = useState<number>(
     getDurationForMode('work', mergedSettings)
@@ -107,10 +108,17 @@ export function useTimer(
       optionsRef.current.onBreakComplete?.();
     }
     
-    setMode(nextMode);
+    setModeState(nextMode);
     setTimeRemaining(getDurationForMode(nextMode, settingsRef.current));
     setTimerState('idle');
   }, [mode, getNextMode]);
+
+  const setMode = useCallback((newMode: TimerMode) => {
+    clearTimerInterval();
+    setModeState(newMode);
+    setTimeRemaining(getDurationForMode(newMode, settingsRef.current));
+    setTimerState('idle');
+  }, [clearTimerInterval]);
 
   const start = useCallback(() => {
     if (timerState === 'running') return;
@@ -172,5 +180,6 @@ export function useTimer(
     pause,
     reset,
     skip,
+    setMode,
   };
 }
