@@ -9,6 +9,7 @@ import { TimerDisplay } from './components/TimerDisplay';
 import { TimerControls } from './components/TimerControls';
 import { SessionCounter } from './components/SessionCounter';
 import { SettingsPanel } from './components/SettingsPanel';
+import { ModeSelector } from './components/ModeSelector';
 import './App.css';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
     start,
     pause,
     reset,
+    setMode,
   } = useTimer(settings, {
     onWorkComplete: playWorkComplete,
     onBreakComplete: playBreakComplete,
@@ -90,6 +92,15 @@ function App() {
 
       {/* Main Content */}
       <main className="app-main">
+        {/* Mode Selector */}
+        <section className="app-mode-section">
+          <ModeSelector
+            currentMode={mode}
+            onModeChange={setMode}
+            disabled={timerState === 'running'}
+          />
+        </section>
+
         {/* Timer Display */}
         <section className="app-timer-section">
           <TimerDisplay

@@ -1,0 +1,121 @@
+/* ModeSelector Component Styles */
+
+.mode-selector {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background-color: var(--surface-secondary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+}
+
+.mode-selector__button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: none;
+  border-radius: var(--radius-lg);
+  background-color: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+  min-width: 80px;
+}
+
+.mode-selector__button:hover:not(:disabled) {
+  background-color: var(--surface-tertiary);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.mode-selector__button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.mode-selector__button--active {
+  background-color: var(--primary);
+  color: var(--text-inverse);
+}
+
+.mode-selector__button--active:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  color: var(--text-inverse);
+}
+
+.mode-selector__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mode-selector__label {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.mode-selector__duration {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  opacity: 0.8;
+}
+
+/* Tablet adjustments (768px and below) */
+@media (max-width: 768px) {
+  .mode-selector {
+    gap: var(--space-1);
+    padding: var(--space-1);
+  }
+
+  .mode-selector__button {
+    padding: var(--space-2) var(--space-3);
+    min-width: 70px;
+  }
+
+  .mode-selector__label {
+    font-size: var(--text-xs);
+  }
+
+  .mode-selector__duration {
+    font-size: 10px;
+  }
+}
+
+/* Mobile adjustments (480px and below) */
+@media (max-width: 480px) {
+  .mode-selector {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mode-selector__button {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-2);
+  }
+
+  .mode-selector__label {
+    font-size: 11px;
+  }
+
+  .mode-selector__duration {
+    font-size: 9px;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .mode-selector__button {
+    transition: none;
+  }
+
+  .mode-selector__button:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .mode-selector__button:active:not(:disabled) {
+    transform: none;
+  }
+}
