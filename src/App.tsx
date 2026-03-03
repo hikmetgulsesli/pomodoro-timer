@@ -1,5 +1,5 @@
 import { Timer, Settings } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSettingsPersistence } from './hooks/useSettingsPersistence';
 import { useTimerPersistence } from './hooks/useTimerPersistence';
 import { useTimer } from './hooks/useTimer';
@@ -10,15 +10,27 @@ import { TimerDisplay } from './components/TimerDisplay';
 import { TimerControls } from './components/TimerControls';
 import { SessionCounter } from './components/SessionCounter';
 import { SettingsPanel } from './components/SettingsPanel';
+import type { SoundSettings } from './components/SettingsPanel';
 import './App.css';
 
 function App() {
   const { settings, isLoaded: settingsLoaded, saveSettings } = useSettingsPersistence();
   const { persistedState, isLoaded: timerStateLoaded, saveTimerState } = useTimerPersistence();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [soundSettings, setSoundSettings] = useState<SoundSettings>({
+    isMuted: false,
+    volume: 0.5,
+  });
   
-  const { playWorkComplete, playBreakComplete } = useSound();
+  const { playWorkComplete, playBreakComplete, setVolume } = useSound();
   
+  // Helper function to play sound only if not muted
+  const playSound = useCallback((soundPlayer: () => void) => {
+    if (!soundSettings.isMuted) {
+      soundPlayer();
+    }
+  }, [soundSettings.isMuted]);
+
   // Determine initial state from persistence
   const getInitialState = () => {
     if (!persistedState) return undefined;
@@ -39,8 +51,8 @@ function App() {
     pause,
     reset,
   } = useTimer(settings, {
-    onWorkComplete: playWorkComplete,
-    onBreakComplete: playBreakComplete,
+    onWorkComplete: () => playSound(playWorkComplete),
+    onBreakComplete: () => playSound(playBreakComplete),
     autoStartBreaks: true,
     initialState: getInitialState(),
   });
@@ -78,6 +90,15 @@ function App() {
         return settings.workDuration * 60;
     }
   };
+
+  const handleSoundSettingsChange = useCallback((newSettings: SoundSettings) => {
+    setSoundSettings(newSettings);
+    setVolume(newSettings.volume);
+  }, [setVolume]);
+
+  const handleCloseSettings = useCallback(() => {
+    setIsSettingsOpen(false);
+  }, []);
 
   if (!settingsLoaded || !timerStateLoaded) {
     return (
@@ -152,9 +173,11 @@ function App() {
       {/* Settings Panel */}
       <SettingsPanel
         isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
+        onClose={handleCloseSettings}
         durations={settings}
         onDurationsChange={saveSettings}
+        soundSettings={soundSettings}
+        onSoundSettingsChange={handleSoundSettingsChange}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Settings, X } from 'lucide-react';
+import { Settings, X, Volume2, VolumeX } from 'lucide-react';
 import './SettingsPanel.css';
 
 export interface TimerDurations {
@@ -8,15 +8,24 @@ export interface TimerDurations {
   longBreakDuration: number; // in minutes
 }
 
+export interface SoundSettings {
+  isMuted: boolean;
+  volume: number; // 0-1
+}
+
 export interface SettingsPanelProps {
   isOpen: boolean;
   onClose: () => void;
   durations: TimerDurations;
   onDurationsChange: (durations: TimerDurations) => void;
+  soundSettings?: SoundSettings;
+  onSoundSettingsChange?: (settings: SoundSettings) => void;
 }
 
 const MIN_DURATION = 1;
 const MAX_DURATION = 60;
+const MIN_VOLUME = 0;
+const MAX_VOLUME = 100;
 
 const DEFAULT_DURATIONS: TimerDurations = {
   workDuration: 25,
@@ -24,23 +33,32 @@ const DEFAULT_DURATIONS: TimerDurations = {
   longBreakDuration: 15,
 };
 
+const DEFAULT_SOUND_SETTINGS: SoundSettings = {
+  isMuted: false,
+  volume: 0.5,
+};
+
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   isOpen,
   onClose,
   durations,
   onDurationsChange,
+  soundSettings = DEFAULT_SOUND_SETTINGS,
+  onSoundSettingsChange,
 }) => {
   // Local state for form values (only apply on save)
   const [formValues, setFormValues] = useState<TimerDurations>(durations);
+  const [soundFormValues, setSoundFormValues] = useState<SoundSettings>(soundSettings);
   const [errors, setErrors] = useState<Partial<Record<keyof TimerDurations, string>>>({});
 
   // Update form values when props change or panel opens
   useEffect(() => {
     if (isOpen) {
       setFormValues(durations);
+      setSoundFormValues(soundSettings);
       setErrors({});
     }
-  }, [isOpen, durations]);
+  }, [isOpen, durations, soundSettings]);
 
   // Handle escape key to close panel
   useEffect(() => {
@@ -88,6 +106,25 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     }));
   }, []);
 
+  const handleVolumeChange = useCallback((value: string) => {
+    const numValue = parseInt(value, 10);
+    const clampedVolume = isNaN(numValue) ? 0 : Math.max(MIN_VOLUME, Math.min(MAX_VOLUME, numValue));
+    
+    setSoundFormValues(prev => ({
+      ...prev,
+      volume: clampedVolume / 100,
+      // Unmute when volume is changed
+      isMuted: clampedVolume === 0 ? true : false,
+    }));
+  }, []);
+
+  const handleMuteToggle = useCallback(() => {
+    setSoundFormValues(prev => ({
+      ...prev,
+      isMuted: !prev.isMuted,
+    }));
+  }, []);
+
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
 
@@ -108,21 +145,27 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
       return;
     }
 
-    // Apply changes
+    // Apply duration changes
     onDurationsChange({
       workDuration: Math.max(MIN_DURATION, Math.min(MAX_DURATION, formValues.workDuration || DEFAULT_DURATIONS.workDuration)),
       shortBreakDuration: Math.max(MIN_DURATION, Math.min(MAX_DURATION, formValues.shortBreakDuration || DEFAULT_DURATIONS.shortBreakDuration)),
       longBreakDuration: Math.max(MIN_DURATION, Math.min(MAX_DURATION, formValues.longBreakDuration || DEFAULT_DURATIONS.longBreakDuration)),
     });
+
+    // Apply sound settings changes
+    onSoundSettingsChange?.(soundFormValues);
+    
     onClose();
-  }, [formValues, onDurationsChange, onClose]);
+  }, [formValues, soundFormValues, onDurationsChange, onSoundSettingsChange, onClose]);
 
   const handleResetDefaults = useCallback(() => {
     setFormValues(DEFAULT_DURATIONS);
+    setSoundFormValues(DEFAULT_SOUND_SETTINGS);
     setErrors({});
   }, []);
 
   const hasErrors = Object.values(errors).some(error => error !== undefined);
+  const displayVolume = Math.round(soundFormValues.volume * 100);
 
   return (
     <>
@@ -252,6 +295,57 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                   Default: {DEFAULT_DURATIONS.longBreakDuration} minutes
                 </span>
               )}
+            </div>
+          </div>
+
+          {/* Sound Settings Section */}
+          <div className="settings-panel__section">
+            <h3 className="settings-panel__section-title">Sound Settings</h3>
+            <p className="settings-panel__section-description">
+              Configure notification sounds for timer completion.
+            </p>
+
+            <div className="settings-panel__field">
+              <div className="settings-panel__sound-header">
+                <label htmlFor="volume-slider" className="settings-panel__label">
+                  Volume
+                </label>
+                <button
+                  type="button"
+                  className="settings-panel__mute-button"
+                  onClick={handleMuteToggle}
+                  aria-label={soundFormValues.isMuted ? 'Unmute sound' : 'Mute sound'}
+                  data-testid="mute-toggle-button"
+                >
+                  {soundFormValues.isMuted ? (
+                    <VolumeX className="settings-panel__mute-icon" aria-hidden="true" />
+                  ) : (
+                    <Volume2 className="settings-panel__mute-icon" aria-hidden="true" />
+                  )}
+                </button>
+              </div>
+              <div className="settings-panel__volume-control">
+                <input
+                  id="volume-slider"
+                  type="range"
+                  min={MIN_VOLUME}
+                  max={MAX_VOLUME}
+                  value={soundFormValues.isMuted ? 0 : displayVolume}
+                  onChange={(e) => handleVolumeChange(e.target.value)}
+                  className={`settings-panel__volume-slider ${soundFormValues.isMuted ? 'settings-panel__volume-slider--muted' : ''}`}
+                  aria-describedby="volume-hint"
+                  data-testid="volume-slider"
+                  disabled={soundFormValues.isMuted}
+                />
+                <span className="settings-panel__volume-value" data-testid="volume-value">
+                  {soundFormValues.isMuted ? 'Muted' : `${displayVolume}%`}
+                </span>
+              </div>
+              <span id="volume-hint" className="settings-panel__hint">
+                {soundFormValues.isMuted 
+                  ? 'Sound is muted. Click the speaker icon to unmute.' 
+                  : 'Adjust the volume for timer completion sounds.'}
+              </span>
             </div>
           </div>
 
